@@ -24,5 +24,5 @@ int main() {
 	}
 	acronym[j+1] = '\0';
 	printf("%s \n",acronym);
-  return 0;
+	return 0;
 }
