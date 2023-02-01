@@ -11,14 +11,13 @@ struct SongInformation {
 
 void printSongs(struct SongInformation s[3],int numOfSongs) {
 	int i;
-  for(i=0;i<numOfSongs;i++) {
-    printf("%d) %-20s  %-35s duration: %d:%d danceability: %-10f \n",
-      i,s[i].artist,s[i].title,s[i].durationMin,s[i].durationSec,s[i].danceability);
+	for(i=0;i<numOfSongs;i++) {
+		printf("%d) %-20s  %-35s duration: %d:%d danceability: %-10f \n",
+		i,s[i].artist,s[i].title,s[i].durationMin,s[i].durationSec,s[i].danceability);
   }
 }
 
 int main() {
-
 	int n=3;
 	struct SongInformation song[3];
 
@@ -28,17 +27,17 @@ int main() {
 	song[0].durationSec = 42;
 	song[0].danceability = 0.1;
 
-  strcpy(song[1].title,"Everybody Wants To Rule The World");
-  strcpy(song[1].artist,"Tears For Fears");
-  song[1].durationMin = 4;
-  song[1].durationSec = 11;
-  song[1].danceability = 0.7;
+	strcpy(song[1].title,"Everybody Wants To Rule The World");
+	strcpy(song[1].artist,"Tears For Fears");
+	song[1].durationMin = 4;
+	song[1].durationSec = 11;
+	song[1].danceability = 0.7;
 
-  strcpy(song[2].title,"Borderline");
-  strcpy(song[2].artist,"Tame Impala");
-  song[2].durationMin = 3;
-  song[2].durationSec = 57;
-  song[2].danceability = 0.4;
+	strcpy(song[2].title,"Borderline");
+	strcpy(song[2].artist,"Tame Impala");
+	song[2].durationMin = 3;
+	song[2].durationSec = 57;
+	song[2].danceability = 0.4;
 
 	// print out initialized songs
 	printf("\n Welcome to the song list. \n");
@@ -66,14 +65,14 @@ int main() {
 	else if (strcmp(attribute,"title")==0){
 		printf("\n Enter %s:",attribute);
 		char newTitle[64];
-    scanf(" %[^\n]%*c",newTitle);
-    strcpy(song[songId].title,newTitle);
+		scanf(" %[^\n]%*c",newTitle);
+		strcpy(song[songId].title,newTitle);
   }
 	else if (strcmp(attribute,"duration")==0){
 		printf("\n Enter the duration (min): ");
-    int newDurationMin;
-    scanf(" %d%*c",&newDurationMin);
-    printf("\n Enter the duration (sec): ");
+		int newDurationMin;
+		scanf(" %d%*c",&newDurationMin);
+		printf("\n Enter the duration (sec): ");
 		int newDurationSec;
 		scanf(" %d%*c",&newDurationSec);
 		song[songId].durationMin = newDurationMin;
@@ -89,9 +88,8 @@ int main() {
 		printf("\n Error: not a valid attribute \n");
 		return 0;
 	}
-
-printSongs(song,n);
-return 0;
+	printSongs(song,n);
+	return 0;
 }
 
 
