@@ -26,6 +26,6 @@ int main() {
 			i = i+1;
 		}
 	}
-printf("\n");
- return 0;
+	printf("\n");
+	return 0;
 }
