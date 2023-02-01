@@ -14,7 +14,7 @@ void printSongs(struct SongInformation s[3],int numOfSongs) {
 	for(i=0;i<numOfSongs;i++) {
 		printf("%d) %-20s  %-35s duration: %d:%d danceability: %-10f \n",
 		i,s[i].artist,s[i].title,s[i].durationMin,s[i].durationSec,s[i].danceability);
-  }
+	}
 }
 
 int main() {
@@ -67,7 +67,7 @@ int main() {
 		char newTitle[64];
 		scanf(" %[^\n]%*c",newTitle);
 		strcpy(song[songId].title,newTitle);
-  }
+	}
 	else if (strcmp(attribute,"duration")==0){
 		printf("\n Enter the duration (min): ");
 		int newDurationMin;
