@@ -36,5 +36,5 @@ int main() {
 	entSpeech[strLen*length+strLen] = '\0';
 	printf("%s \n",entSpeech);
 	free(entSpeech);
-  return 0;
+	return 0;
 }
