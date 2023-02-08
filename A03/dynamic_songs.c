@@ -8,29 +8,29 @@
 #include <stdlib.h>
 
 struct SongInformation {
-  char artist[128];
-  char title[128];
-  int durationMin;
-  int durationSec;
-  float danceability;
+	char artist[128];
+	char title[128];
+	int durationMin;
+	int durationSec;
+	float danceability;
 	float energy;
 	float tempo;
 	float valence;
 };
 
 void printSongs(struct SongInformation* s,int numOfSongs) {
-  int i;
+	int i;
 	char seconds[3];
-  for(i=0;i<numOfSongs;i++) {
+	for(i=0;i<numOfSongs;i++) {
 		if (s[i].durationSec<10){
 			sprintf(seconds,"0%d",s[i].durationSec);
 		}
 		else {
 			sprintf(seconds,"%d",s[i].durationSec);
 		}
-    printf("%d)  %-20s  %-35s duration: %d:%s D: %-10f E: %-10f T: %-10f V: %-10f\n",
-    i,s[i].artist,s[i].title,s[i].durationMin,seconds,s[i].danceability,s[i].energy,s[i].tempo,s[i].valence);
-  }
+		printf("%d)  %-20s  %-35s duration: %d:%s D: %-10f E: %-10f T: %-10f V: %-10f\n",
+		i,s[i].artist,s[i].title,s[i].durationMin,seconds,s[i].danceability,s[i].energy,s[i].tempo,s[i].valence);
+	}
 }
 
 int main() {
@@ -52,7 +52,6 @@ int main() {
 	// memory allocate space for struct of size numOfSongs
 	struct SongInformation t;
 	struct SongInformation *s = malloc(sizeof(t)*numOfSongs);
-
 	// skip header
 	fgets(buff,128,infile);
 	// continue to get songs and store them in struc
@@ -63,23 +62,19 @@ int main() {
 		strcpy(s[i].title,token);
 		token = strtok(NULL,delim);
 		strcpy(s[i].artist,token);
-    token = strtok(NULL,delim);
+		token = strtok(NULL,delim);
 		int durMin = (atoi(token)/1000)/60;
 		int durSec = (atoi(token)/1000)%60;
-    s[i].durationMin = durMin;
+		s[i].durationMin = durMin;
 		s[i].durationSec = durSec;
-    token = strtok(NULL,delim);
-    s[i].danceability = atof(token);
-    token = strtok(NULL,delim);
-    s[i].energy = atof(token);
-    token = strtok(NULL,delim);
-    s[i].tempo = atof(token);
-    token = strtok(NULL,delim);
-    s[i].valence = atof(token);
-		//while (token != NULL) {
-			//printf("%s\n",token);
-		//	token = strtok(NULL,s);
-		//}
+		token = strtok(NULL,delim);
+		s[i].danceability = atof(token);
+		token = strtok(NULL,delim);
+		s[i].energy = atof(token);
+		token = strtok(NULL,delim);
+		s[i].tempo = atof(token);
+		token = strtok(NULL,delim);
+ 		s[i].valence = atof(token);
 	}
 	printSongs(s,numOfSongs);
 	free(s);
