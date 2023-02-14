@@ -9,7 +9,7 @@
 #include <string.h>
 
 // test commit from vscode
-int testing = 0;
+int testin = 0;
 
 // define struct to be used in node
 struct SongInformation {
