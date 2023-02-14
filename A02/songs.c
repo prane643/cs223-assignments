@@ -24,7 +24,7 @@ int main() {
 	strcpy(song[0].title,"Solitude");
 	strcpy(song[0].artist,"M83");
 	song[0].durationMin = 3;
-	song[0].durationSec = 42;
+	song[0].durationSec = 43;
 	song[0].danceability = 0.1;
 
 	strcpy(song[1].title,"Everybody Wants To Rule The World");
