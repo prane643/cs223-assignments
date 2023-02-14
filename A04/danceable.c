@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+// test commit from vscode
+int testing = 0;
+
 // define struct to be used in node
 struct SongInformation {
   char artist[128];
