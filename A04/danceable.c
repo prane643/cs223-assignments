@@ -73,7 +73,7 @@ int main() {
   // define delimeter, token, and iteration value
   const char delim[2]=",";
   char* token;
-  int i=0;
+  //int i=0;
   // start linked list
   struct node* head = NULL;
   //list  = insert_front(2, NULL);
