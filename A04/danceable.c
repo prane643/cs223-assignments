@@ -136,8 +136,6 @@ int main() {
     return 0;
   }
   do {
-  //while(fgets(buff,128,infile)!=NULL){
-    // create new struct
     struct SongInformation s;
     // input line information into struct 
     token = strtok(buff,delim);
