@@ -27,7 +27,6 @@ struct node {
 
 struct node* insert_front(struct SongInformation val, struct node* head) {
   struct node* n = malloc(sizeof(struct node));
-  printf("\nsize of malloc is %ld \n",sizeof(struct node));
   if (n == NULL) {
     printf("ERROR: Out of space!\n");
     exit(1);
@@ -132,7 +131,12 @@ int main() {
   char* token;
   struct node* n;
   int i=0;
-  while(fgets(buff,128,infile)!=NULL){
+  if (fgets(buff,128,infile)==NULL) {
+    printf("\n Error: The song list appears to be empty\n\n");
+    return 0;
+  }
+  do {
+  //while(fgets(buff,128,infile)!=NULL){
     // create new struct
     struct SongInformation s;
     // input line information into struct 
@@ -161,8 +165,7 @@ int main() {
       n = insert_front(s,n);
     }
     i = i+1;
-  }
-
+  } while (fgets(buff,128,infile)!=NULL);
   // print songs and get number of songs
   int numOfSongs;
   numOfSongs = print(n);
@@ -176,11 +179,13 @@ int main() {
     scanf(" %c",&userInput);
     if (userInput!='d') {
       // need to free here...
-      while(n->next!=NULL) {
-        struct node* temp;
-        temp = n;
-        n = n->next;
-        free(temp);
+      if (n!=NULL) {
+        while(n->next!=NULL) {
+          struct node* temp;
+          temp = n;
+          n = n->next;
+          free(temp);
+        }
       }
       free(n);
       fclose(infile);
