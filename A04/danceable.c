@@ -162,7 +162,6 @@ int main() {
     }
     i = i+1;
   }
-
   // print songs and get number of songs
   int numOfSongs;
   numOfSongs = print(n);
