@@ -125,7 +125,7 @@ int main() {
   }
   // skip header
   char buff[128];
-	fgets(buff,128,infile);
+  fgets(buff,128,infile);
   // define delimeter, token, and first node pointer
   const char delim[2]=",";
   char* token;
