@@ -137,7 +137,6 @@ int main() {
   }
   do {
     struct SongInformation s;
-    // input line information into struct 
     token = strtok(buff,delim);
     strcpy(s.title,token);
     token = strtok(NULL,delim);
