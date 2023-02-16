@@ -118,11 +118,11 @@ struct node* printAndRemoveDance(struct node* list) {
 int main() {
   // read in correct file
   FILE *infile;
-	infile = fopen("songlist.csv","r");
-	if (infile==NULL) {
-		printf("There was an error reading the file");
-		exit(1);
-	}
+  infile = fopen("songlist.csv","r");
+  if (infile==NULL) {
+    printf("There was an error reading the file");
+    exit(1);
+  }
   // skip header
   char buff[128];
 	fgets(buff,128,infile);
