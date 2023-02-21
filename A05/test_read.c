@@ -10,7 +10,6 @@
 int main() {
   int w, h;
   struct ppm_pixel* pixels = read_ppm("feep-raw.ppm", &w, &h);
-
   int i,j,idx;
   for (i=0;i<h;i++) {
     for (j=0;j<w;j++) {
@@ -20,7 +19,6 @@ int main() {
     printf("\n");
   }
   printf("\n");
-  // todo: print out the grid of pixels
   free(pixels);
   return 0;
 }
