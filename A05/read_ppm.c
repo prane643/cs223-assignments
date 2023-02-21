@@ -11,7 +11,22 @@
 // Choose *one* to implement (do not remove the other one!)
 
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
-  return NULL;
+  FILE *infile;
+	infile = fopen(filename,"rb");
+	if (infile==NULL) {
+		return NULL;
+	}
+	// get first line of file
+	char buff[128];
+	fgets(buff,128,infile);
+  fgets(buff,128,infile);
+  fscanf(infile," %d %d%*c",h,w);
+  struct ppm_pixel* p = malloc(sizeof(struct ppm_pixel)*(*w)*(*h));
+  if (p==NULL) {
+    return NULL;
+  }
+  fread(p,sizeof(struct ppm_pixel),(*w)*(*h),infile);
+  return p;
 }
 
 struct ppm_pixel** read_ppm_2d(const char* filename, int* w, int* h) {
