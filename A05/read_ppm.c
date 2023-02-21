@@ -12,13 +12,13 @@
 
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   FILE *infile;
-	infile = fopen(filename,"rb");
-	if (infile==NULL) {
-		return NULL;
-	}
-	// skip through header
-	char buff[128];
-	fgets(buff,128,infile);
+  infile = fopen(filename,"rb");
+  if (infile==NULL) {
+    return NULL;
+    }
+  // skip through header
+  char buff[128];
+  fgets(buff,128,infile);
   fgets(buff,128,infile);
   fscanf(infile," %d %d%*c",h,w);
   fgets(buff,128,infile);
