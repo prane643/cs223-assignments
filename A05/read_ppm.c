@@ -1,6 +1,6 @@
 /*----------------------------------------------
- * Author: 
- * Date: 
+ * Author: Pranav Rane
+ * Date: Feb 21
  * Description
  ---------------------------------------------*/
 #include <stdio.h>
@@ -15,7 +15,7 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   infile = fopen(filename,"rb");
   if (infile==NULL) {
     return NULL;
-    }
+  }
   // skip through header
   char buff[128];
   fgets(buff,128,infile); // P6
