@@ -16,7 +16,7 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
 	if (infile==NULL) {
 		return NULL;
 	}
-	// get first line of file
+	// skip through header
 	char buff[128];
 	fgets(buff,128,infile);
   fgets(buff,128,infile);
