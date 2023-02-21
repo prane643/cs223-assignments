@@ -1,6 +1,6 @@
 /*----------------------------------------------
- * Author: 
- * Date: 
+ * Author: Pranav Rane
+ * Date: Feb 21
  * Description
  ---------------------------------------------*/
 
@@ -16,12 +16,14 @@ int main(int argc, char** argv) {
   // test writing the file to test.ppm, reload it, and print the contents
   // write data
   write_ppm("test.ppm",pixels1,w,h);
+  free(pixels1);
   struct ppm_pixel* pixels = read_ppm("test.ppm", &w, &h);
   int i,j,idx;
   for (i=0;i<h;i++) {
     for (j=0;j<w;j++) {
       idx = i*w+j;
-      printf("(%d,%d,%d) ",pixels[idx].red,pixels[idx].green,pixels[idx].blue);
+      printf("(%d,%d,%d) ",pixels[idx].red,
+        pixels[idx].green,pixels[idx].blue);
     }
     printf("\n");
   }
