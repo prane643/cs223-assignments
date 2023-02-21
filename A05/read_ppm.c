@@ -21,11 +21,14 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
 	fgets(buff,128,infile);
   fgets(buff,128,infile);
   fscanf(infile," %d %d%*c",h,w);
+  fgets(buff,128,infile);
+  printf("\n size: %d %d\n",*h,*w);
   struct ppm_pixel* p = malloc(sizeof(struct ppm_pixel)*(*w)*(*h));
   if (p==NULL) {
     return NULL;
   }
   fread(p,sizeof(struct ppm_pixel),(*w)*(*h),infile);
+  fclose(infile);
   return p;
 }
 
