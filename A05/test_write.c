@@ -14,7 +14,6 @@ int main(int argc, char** argv) {
   int w, h;
   struct ppm_pixel* pixels1 = read_ppm("feep-raw.ppm", &w, &h);
   // test writing the file to test.ppm, reload it, and print the contents
-  // write data
   write_ppm("test.ppm",pixels1,w,h);
   free(pixels1);
   struct ppm_pixel* pixels = read_ppm("test.ppm", &w, &h);
