@@ -15,7 +15,26 @@ int main(int argc, char** argv) {
   int width,height;
   struct ppm_pixel *p;
   p = read_ppm("tiny_encoded.ppm",&width,&height);
-
+  // p is a pointer to the pixel information of the image
+  printf("\n Width: %d, Height: %d \n",width,height);
+  int numOfPixels;
+  numOfPixels = width*height;
+  printf("Max number of characters in the image: %d\n",(numOfPixels*3)/8);
+  // find secret message
+  int i,redVal,greenVal,blueVal,count=0;
+  int message[numOfPixels*3];
+  for (i=0;i<numOfPixels;i++) {
+      redVal = p[i].red;
+      greenVal = p[i].green;
+      blueVal = p[i].blue;
+      // now check if even or odd
+      message[count] = redVal%2;
+      count = count+1;
+      message[count] = greenVal%2;
+      count = count+1;
+      message[count] = blueVal%2;
+      count = count+1;
+  }
   return 0;
 }
 
