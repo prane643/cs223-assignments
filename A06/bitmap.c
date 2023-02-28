@@ -6,22 +6,28 @@
 #include <stdio.h>
 
 int main() {
-  unsigned long img;
+  unsigned long img,bitShift,operationResult,zero=0;
   scanf(" %lx", &img);
   printf("Image (unsigned long): %lx\n\n", img);
-  unsigned long test;
-  int i;
+  int i,count=0;
   for (i=63;i>=0;i--){
-  test = 1<<i;
-  printf("%lx \n",test);
-  if (test&img == 0){
-    // if here the current bit is zero
-    printf(" ");
-  }
-  else {
-    // if here the current bit is one
-    printf("@");
-  }
+    // use bit shift and & operator to analyze current bit
+    bitShift = 0x1ul<<i;
+    operationResult = bitShift&img;
+    if (operationResult == zero){
+      // if here the current bit is zero
+      printf("  ");
+    }
+    else {
+      // if here the current bit is one
+      printf("@ ");
+    }
+    count = count+1;
+    if (count==8){
+      // print new line after 8 bits are read
+      printf("\n");
+      count = 0;
+    }
   }
   // todo: your code here
   return 0;
