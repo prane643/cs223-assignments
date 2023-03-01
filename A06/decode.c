@@ -22,29 +22,57 @@ int main(int argc, char** argv) {
   printf("Max number of characters in the image: %d\n",(numOfPixels*3)/8);
   // find secret message
   int i,redVal,greenVal,blueVal,count=0;
-  unsigned long message = 0b0;
+  int message = 0b0;
+  printf("\n");
   //message = malloc(sizeof(int)*numOfPixels*3);
   for (i=0;i<numOfPixels;i++) {
       redVal = p[i].red;
       greenVal = p[i].green;
       blueVal = p[i].blue;
       // now check if even or odd
-      if (i==0) {
+      if (count==0) {
         message = message + redVal%2;
       }
       else {
         message = (message<<1) + redVal%2;
       }
       count = count+1;
-      message = (message<<1) + greenVal%2;
+      if (count==8) {
+        printf("%c",message);
+        count = 0;
+        message = 0b0;
+      }
+      if (count==0) {
+        message = message + greenVal%2;
+      }
+      else {
+        message = (message<<1) + greenVal%2;
+      }
+      //message = (message<<1) + greenVal%2;
       count = count+1;
-      message = (message<<1) + blueVal%2;
+      if (count==8) {
+        printf("%c",message);
+        count = 0;
+        message = 0b0;
+      }
+      if (count==0) {
+        message = message + blueVal%2;
+      }
+      else {
+        message = (message<<1) + blueVal%2;
+      }
+      //message = (message<<1) + blueVal%2;
       count = count+1;
+      if (count==8) {
+        printf("%c",message);
+        count = 0;
+        message = 0b0;
+      }
   }
-  count = count-1;
-  //int c = 0b00000001<<4;
-  char c = strtol(message, 0, 2);
-  printf("\n%02lX\n",message);
+  printf("\n");
+  //int c = 0b0110000101100001;
+  //char c = strtol(message, 0, 2);
+  //printf("\n%c\n",c);
   /*
   for (i=0;i<count;i++){
     printf("%d",message[i]);
