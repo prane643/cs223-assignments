@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
   }
   int width,height;
   struct ppm_pixel *p;
-  p = read_ppm("tiny_encoded.ppm",&width,&height);
+  p = read_ppm("monalisa.ppm",&width,&height);
   // p is a pointer to the pixel information of the image
   printf("\n Width: %d, Height: %d \n",width,height);
   int numOfPixels;
