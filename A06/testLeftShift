@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main() {
+    int x = 0b0,y;
+    x << 7;
+    x = x+65;
+    y = x|0b11111111;
+    return 0;
+}
