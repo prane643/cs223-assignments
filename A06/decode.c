@@ -7,14 +7,16 @@
 #include <stdlib.h>
 #include "read_ppm.h"
 
+
 int main(int argc, char** argv) {
   if (argc != 2) {
     printf("usage: decode <file.ppm>\n");
-    return 0;
+    //return 0;
   }
   int width,height;
   struct ppm_pixel *p;
-  p = read_ppm(argv[1],&width,&height);
+  //p = read_ppm(argv[1],&width,&height);
+  p = read_ppm("test.ppm",&width,&height);
   // p is a pointer to the pixel information of the image
   if (p==NULL) {
     printf("\n Error: file cannot be read\n");
