@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     printf("\n Error: file cannot be read\n");
     exit(1);
   }
-  printf("\n Width: %d, Height: %d \n",width,height);
+  printf("Reading %s with width %d and height %d \n",argv[1],width,height);
   int numOfPixels;
   numOfPixels = width*height;
   printf("Max number of characters in the image: %d\n",(numOfPixels*3)/8);
