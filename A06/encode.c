@@ -6,8 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include "read_ppm.h"
+#include "read_ppm.h"
 #include "write_ppm.h"
+
 
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   FILE *infile;
@@ -66,10 +67,31 @@ int main(int argc, char** argv) {
   scanf(" %s",phrase);
   int strLen,i,currentChar;
   strLen = strlen(phrase);
-  int num,rem,bin=0b0,pixelIdx=0;
+  int num,rem,bin=0b0;//,pixelIdx=8,changePixel=0;
   for(i=0;i<strLen;i++) {
+    if (i>0) {
+      bin = bin<<8;
+    }
     currentChar = phrase[i];
     // convert current Char to 8 bit binary
+    int i1 = 0,i2=0;
+    num = currentChar;
+    while(i2<8) {
+      rem = num%2;
+      num = num/2;
+      if (num==currentChar/2) {
+        bin = (bin + rem)<<i1;
+      }
+      else {
+        bin = bin + (rem<<i1);
+      }
+      i1 = i1+1;
+      i2 = i2+1;
+    }
+    printf("\n%d\n",bin);
+    
+    // here we have the 8-bit value of the character we want to put in message
+    /*
     num = currentChar;
     while(num>0) {
       rem = num%2;
@@ -82,15 +104,26 @@ int main(int argc, char** argv) {
       }
       // now change pixel data depending if rem is 0 or 1
       if (rem==1) {
-
+        if (p[pixelIdx].red%2==0) {
+          p[pixelIdx].red = p[pixelIdx].red+1;
+        }
+      }
+      if (rem==0) {
+        if (p[pixelIdx].red%2==1) {
+          p[pixelIdx].red = p[pixelIdx].red+1;
+        }
       }
     }
     if (bin!=currentChar) {
       printf("\n Error, bin!=currentChar");
       exit(1);
     }
-  int ch; //= 0b0;
-  ch = phrase[0];
+    changePixel = changePixel+1;
+    if (changePixel==3) {
+      pixelIdx = pixelIdx-1;
+      changePixel = 0;
+    }
+  */
   }
 
   free(p);
