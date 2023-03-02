@@ -7,6 +7,47 @@
 #include <stdlib.h>
 #include "read_ppm.h"
 
+
+
+struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
+  FILE *infile;
+  infile = fopen(filename,"rb");
+  if (infile==NULL) {
+    return NULL;
+  }
+  // skip through header
+  char buff[128],c1;
+  fgets(buff,128,infile); // P6
+  c1 = getc(infile);
+  if (c1=='#') {
+    // if here there is a comment, so skip
+    ungetc(c1,infile);
+    fgets(buff,128,infile);
+  }
+  else {
+    ungetc(c1,infile);
+  }
+  fscanf(infile," %d %d%*c",h,w); // size
+  fgets(buff,128,infile);
+  struct ppm_pixel* p = malloc(sizeof(struct ppm_pixel)*(*w)*(*h));
+  if (p==NULL) {
+    return NULL;
+  }
+  fread(p,sizeof(struct ppm_pixel),(*w)*(*h),infile);
+  fclose(infile);
+  return p;
+}
+
+
+
+
+
+
+
+
+
+
+
 int main(int argc, char** argv) {
   if (argc != 2) {
     printf("usage: decode <file.ppm>\n");
@@ -14,7 +55,7 @@ int main(int argc, char** argv) {
   }
   int width,height;
   struct ppm_pixel *p;
-  p = read_ppm("monalisa.ppm",&width,&height);
+  p = read_ppm("monalisa-encoded.ppm",&width,&height);
   // p is a pointer to the pixel information of the image
   printf("\n Width: %d, Height: %d \n",width,height);
   int numOfPixels;
@@ -38,6 +79,9 @@ int main(int argc, char** argv) {
       }
       count = count+1;
       if (count==8) {
+        if (message==0) {
+          return 0;
+        }
         printf("%c",message);
         count = 0;
         message = 0b0;
@@ -51,6 +95,9 @@ int main(int argc, char** argv) {
       //message = (message<<1) + greenVal%2;
       count = count+1;
       if (count==8) {
+        if (message==0) {
+          return 0;
+        }
         printf("%c",message);
         count = 0;
         message = 0b0;
@@ -64,6 +111,9 @@ int main(int argc, char** argv) {
       //message = (message<<1) + blueVal%2;
       count = count+1;
       if (count==8) {
+        if (message==0) {
+          return 0;
+        }
         printf("%c",message);
         count = 0;
         message = 0b0;
@@ -80,4 +130,3 @@ int main(int argc, char** argv) {
   */
   return 0;
 }
-

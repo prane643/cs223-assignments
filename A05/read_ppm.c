@@ -28,7 +28,6 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   else {
     ungetc(c1,infile);
   }
-  //fgets(buff,128,infile); // could be comment
   fscanf(infile," %d %d%*c",h,w); // size
   fgets(buff,128,infile);
   struct ppm_pixel* p = malloc(sizeof(struct ppm_pixel)*(*w)*(*h));
