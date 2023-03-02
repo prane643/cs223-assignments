@@ -16,6 +16,10 @@ int main(int argc, char** argv) {
   struct ppm_pixel *p;
   p = read_ppm(argv[1],&width,&height);
   // p is a pointer to the pixel information of the image
+  if (p==NULL) {
+    printf("\n Error: file cannot be read\n");
+    exit(1);
+  }
   printf("\n Width: %d, Height: %d \n",width,height);
   int numOfPixels;
   numOfPixels = width*height;
