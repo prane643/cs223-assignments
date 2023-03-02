@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "read_ppm.h"
+#include "read_ppm.c"
 
 int main() {
   int w, h;

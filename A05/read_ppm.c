@@ -17,10 +17,21 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
     return NULL;
   }
   // skip through header
-  char buff[128];
+  char buff[128],c1;
   fgets(buff,128,infile); // P6
-  fgets(buff,128,infile); // comment
+  c1 = getc(infile);
+  if (c1=='#') {
+    // if here there is a comment, so skip
+    ungetc(c1,infile);
+    fgets(buff,128,infile);
+  }
+  else {
+    ungetc(c1,infile);
+  }
+  //fgets(buff,128,infile); // could be comment
   fscanf(infile," %d %d%*c",h,w); // size
+
+  
   fgets(buff,128,infile);
   struct ppm_pixel* p = malloc(sizeof(struct ppm_pixel)*(*w)*(*h));
   if (p==NULL) {
