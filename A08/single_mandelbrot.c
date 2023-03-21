@@ -36,9 +36,9 @@ int main(int argc, char* argv[]) {
 
   // generate pallet
   srand(time(0));
-  int *pallete;
+  unsigned char *pallete;
   int idx,i1,j1;
-  pallete = malloc(sizeof(float)*maxIterations*3);
+  pallete = malloc(sizeof(unsigned char)*maxIterations*3);
   for (i1=0;i1<maxIterations;i1++) {
     for (j1=0;j1<3;j1++) {
       idx = i1*3+j1;
@@ -47,7 +47,8 @@ int main(int argc, char* argv[]) {
   }
   
   // run algorithm
-  int iter,r,g,b;
+  int iter,imgIdx=0;
+  unsigned char r,g,b;
   float i,j;
   float xfrac,yfrac,x0,y0,x,y,xtmp;
   struct ppm_pixel pixel;
@@ -74,14 +75,21 @@ int main(int argc, char* argv[]) {
         pixel.green = g;
         pixel.blue = b;
       }
-
-
+      else {
+        pixel.red = 0;
+        pixel.green = 0;
+        pixel.blue = 0;
+      }
+      image[imgIdx] = pixel;
+      imgIdx++;
     }
   }
 
 
-  
+  // wrtie image
+  write_ppm("testImage.ppm",image,size,size);
 
-  // compute image
-
+  // free memory
+  free(pallete);
+  free(image);
 }
