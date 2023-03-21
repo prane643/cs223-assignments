@@ -8,10 +8,10 @@
 
 int main(int argc, char* argv[]) {
   int size = 480;
-  float xmin = -2.0;
-  float xmax = 0.47;
-  float ymin = -1.12;
-  float ymax = 1.12;
+  float xmin = -0.02524993;//-2.0;
+  float xmax = 0.00975;//0.47;
+  float ymin = -0.8172;//-1.12;
+  float ymax = -0.79725;//1.12;
   int maxIterations = 1000;
 
   int opt;
