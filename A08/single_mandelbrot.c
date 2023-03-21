@@ -30,6 +30,31 @@ int main(int argc, char* argv[]) {
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
   // todo: your work here
+  int MAX = 100;
+  int iter;
+  float i,j;
+  float xfrac,yfrac,x0,y0,x,y,xtmp;
+  for (i=0;i<size;i++) {
+    for (j=0;j<size;j++) {
+      xfrac = i/size;
+      yfrac = j/size;
+      x0 = xmin+xfrac*(xmax-xmin);
+      y0 = ymin+yfrac*(ymax-ymin);
+      x = 0;
+      y = 0;
+      iter = 0;
+      while (iter<MAX && (x*x+y*y)<2*2) {
+        xtmp = x*x - y*y + x0;
+        y = 2*x*y + y0;
+        x = xtmp;
+        iter = iter+1;
+      }
+    }
+  }
+
+
+
+
   // generate pallet
   srand(time(0));
 
