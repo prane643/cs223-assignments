@@ -32,11 +32,25 @@ int main(int argc, char* argv[]) {
   // todo: your work here
 
   // allocate memory for image
+  struct ppm_pixel *image = malloc(sizeof(struct ppm_pixel)*size*size);
 
-  int MAX = 100;
-  int iter;
+  // generate pallet
+  srand(time(0));
+  int *pallete;
+  int idx,i1,j1;
+  pallete = malloc(sizeof(float)*maxIterations*3);
+  for (i1=0;i1<maxIterations;i1++) {
+    for (j1=0;j1<3;j1++) {
+      idx = i1*3+j1;
+      pallete[idx]=rand()%255;
+    }
+  }
+  
+  // run algorithm
+  int iter,r,g,b;
   float i,j;
   float xfrac,yfrac,x0,y0,x,y,xtmp;
+  struct ppm_pixel pixel;
   for (i=0;i<size;i++) {
     for (j=0;j<size;j++) {
       xfrac = i/size;
@@ -46,22 +60,27 @@ int main(int argc, char* argv[]) {
       x = 0;
       y = 0;
       iter = 0;
-      while (iter<MAX && (x*x+y*y)<2*2) {
+      while (iter<maxIterations && (x*x+y*y)<2*2) {
         xtmp = x*x - y*y + x0;
         y = 2*x*y + y0;
         x = xtmp;
         iter = iter+1;
       }
+      if (iter < maxIterations) {
+        r = pallete[iter*3];
+        g = pallete[iter*3+1];
+        b = pallete[iter*3+2];
+        pixel.red = r;
+        pixel.green = g;
+        pixel.blue = b;
+      }
+
+
     }
   }
 
-  // generate pallet
-  srand(time(0));
-  float red,green,blue;
 
-  red = rand()%255;
-  green = rand()%255;
-  blue = rand()%255;
+  
 
   // compute image
 
