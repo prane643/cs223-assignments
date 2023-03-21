@@ -30,6 +30,9 @@ int main(int argc, char* argv[]) {
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
   // todo: your work here
+
+  // allocate memory for image
+
   int MAX = 100;
   int iter;
   float i,j;
@@ -52,11 +55,13 @@ int main(int argc, char* argv[]) {
     }
   }
 
-
-
-
   // generate pallet
   srand(time(0));
+  float red,green,blue;
+
+  red = rand()%255;
+  green = rand()%255;
+  blue = rand()%255;
 
   // compute image
 
