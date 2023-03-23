@@ -3,13 +3,11 @@
 #include <unistd.h>
 
 int main() {
-  // testing
+
   pid_t pid, mypid;
   mypid = getpid();
   printf("%d] A0\n",mypid);
-
   pid = fork();
-
   if (pid==0) {
     // child process
     mypid = getpid();
@@ -19,7 +17,6 @@ int main() {
     // parent process
     mypid = getpid();
     printf("%d] B0\n",mypid);
-
     pid = fork();
     if (pid==0) {
       // child process
