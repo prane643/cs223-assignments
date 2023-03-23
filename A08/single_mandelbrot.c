@@ -47,11 +47,15 @@ int main(int argc, char* argv[]) {
   }
   
   // run algorithm
+  double timer;
+  struct timeval tstart, tend;
   int iter,imgIdx=0;
   unsigned char r,g,b;
   float i,j;
   float xfrac,yfrac,x0,y0,x,y,xtmp;
   struct ppm_pixel pixel;
+  // start timer
+  gettimeofday(&tstart, NULL);
   for (i=0;i<size;i++) {
     for (j=0;j<size;j++) {
       xfrac = i/size;
@@ -84,9 +88,12 @@ int main(int argc, char* argv[]) {
       imgIdx++;
     }
   }
+  gettimeofday(&tend, NULL);
 
+  timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
+  printf("Time to compute image: %g sec\n",timer);
 
-  // wrtie image
+  // write image
   write_ppm("testImage.ppm",image,size,size);
 
   // free memory
