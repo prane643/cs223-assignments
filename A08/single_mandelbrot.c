@@ -100,4 +100,6 @@ int main(int argc, char* argv[]) {
   // free memory
   free(pallete);
   free(image);
+
+  return 0;
 }
