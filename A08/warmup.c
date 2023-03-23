@@ -3,7 +3,6 @@
 #include <unistd.h>
 
 int main() {
-
   pid_t pid, mypid;
   mypid = getpid();
   printf("%d] A0\n",mypid);
