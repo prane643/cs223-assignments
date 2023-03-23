@@ -29,8 +29,6 @@ int main(int argc, char* argv[]) {
   printf("  X range = [%.4f,%.4f]\n", xmin, xmax);
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
-  // todo: your work here
-
   // allocate memory for image
   struct ppm_pixel *image = malloc(sizeof(struct ppm_pixel)*size*size);
 
@@ -89,12 +87,15 @@ int main(int argc, char* argv[]) {
     }
   }
   gettimeofday(&tend, NULL);
-
+  
+  // calculate computation time
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
-  printf("Time to compute image: %g sec\n",timer);
+  printf("Computed mandelbrot set (%dx%d) in %g seconds\n",size,size,timer);
 
   // write image
-  write_ppm("testImage.ppm",image,size,size);
+  char buffer[100];
+  sprintf(buffer,"mandelbrot-%d-%ld.ppm",size,time(0));
+  write_ppm(buffer,image,size,size);
 
   // free memory
   free(pallete);
