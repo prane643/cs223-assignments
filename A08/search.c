@@ -17,6 +17,30 @@ int main() {
   int *intList = malloc(sizeof(int)*(*numOfInt));
   fread(intList, sizeof(int),*numOfInt, fp);
   // look for integer
+  printf("\nEnter a value to search: ");
+  int input;
+  scanf(" %d",&input);
+  printf("\n Looking for: %d",input);
+
+  // start looking for integer
+  int split = (*numOfInt)/2;
+  int i,j;
+  if (pid!=0) {
+    // parent process
+    for(i=0;i<split;i++) {
+      
+
+    }
+  }
+  else {
+    // child process
+    for (j=split;j<(*numOfInt);j++) {
+      
+    }
+  }
+
+
+
 
   fclose(fp);
   free(numOfInt);
