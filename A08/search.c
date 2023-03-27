@@ -6,17 +6,19 @@
 
 
 #include <stdio.h>
-# include <stdlib.h>
+#include <stdlib.h>
 
 int main() {
   //struct point p[3];
   FILE* fp = fopen("data.bin", "rb");
-  int *numOfInt;
+  int *numOfInt = malloc(sizeof(int));
   fread(numOfInt, sizeof(int),1, fp);
-  
-
-
+  //printf("Number of ints: %d",*numOfInt);
+  int *intList = malloc(sizeof(int)*(*numOfInt));
+  fread(intList, sizeof(int),*numOfInt, fp);
+  // look for integer
 
   fclose(fp);
+  free(numOfInt);
   return 0;
 }
