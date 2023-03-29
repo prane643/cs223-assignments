@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
   pid = fork();
   if(pid==0) {
     ////////////// child 2 process ///////////////////
-    printf("Launched child process: %d",getpid());
+    printf("Launched child process: %d\n",getpid());
     printf("%d) Sub-image block: cols (%d,%d) to rows (0,%d)\n",
       getpid(),size/2,size,size/2);
     int iter,imgIdx=size/2;
@@ -115,6 +115,7 @@ int main(int argc, char* argv[]) {
       }
     }
     // exit child 2
+    shmdt(image);
     exit(0);
   }
   else {
@@ -122,7 +123,7 @@ int main(int argc, char* argv[]) {
     pid = fork();
     if (pid==0) {
       ////////////// child 3 process ///////////////////
-      printf("Launched child process: %d",getpid());
+      printf("Launched child process: %d\n",getpid());
       printf("%d) Sub-image block: cols (0,%d) to rows (%d,%d)\n",
         getpid(),size/2,size/2,size);
       int iter,imgIdx=2*(size/2)*(size/2)+1;
@@ -166,22 +167,67 @@ int main(int argc, char* argv[]) {
         }
       }
       // exit child 3 process
+      shmdt(image);
       exit(0);
     }
     else {
       // parent process...spawn another child
       pid = fork();
-        if (pid==0) {
+      if (pid==0) {
         ////////////// child 4 process ///////////////////
-        printf("Launched child process: %d",getpid());
+        printf("Launched child process: %d\n",getpid());
         printf("%d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
           getpid(),size/2,size,size/2,size);
+        int iter,imgIdx=2*(size/2)*(size/2)+(size/2);
+        unsigned char r,g,b;
+        float i,j;
+        float xfrac,yfrac,x0,y0,x,y,xtmp;
+        struct ppm_pixel pixel;
+        for (i=size/2;i<size;i++) {
+          for (j=size/2;j<size;j++) {
+            xfrac = j/size;
+            yfrac = i/size;
+            x0 = xmin+xfrac*(xmax-xmin);
+            y0 = ymin+yfrac*(ymax-ymin);
+            x = 0;
+            y = 0;
+            iter = 0;
+            while (iter<maxIterations && (x*x+y*y)<2*2) {
+              xtmp = x*x - y*y + x0;
+              y = 2*x*y + y0;
+              x = xtmp;
+              iter = iter+1;
+            }
+            if (iter < maxIterations) {
+              r = pallete[iter*3];
+              g = pallete[iter*3+1];
+              b = pallete[iter*3+2];
+              pixel.red = r;
+              pixel.green = g;
+              pixel.blue = b;
+            }
+            else {
+              pixel.red = 0;
+              pixel.green = 0;
+              pixel.blue = 0;
+            }
+            image[imgIdx] = pixel;
+            if(j==size-1){
+              imgIdx=imgIdx+(size/2);
+            }
+            imgIdx++;
+          }
         }
+        // exit child 4 process
+        shmdt(image);
+        exit(0);
+      }
       else {
         // parent process
+        printf("Launched child process: %d\n",getpid());
         printf("%d) Sub-image block: cols (0,%d) to rows (0,%d)\n",
-          pid,size/2,size/2);
-        int iter,imgIdx=0;
+          getpid(),size/2,size/2);
+        int iter,imgIdx=0, status=0;
         unsigned char r,g,b;
         float i,j;
         float xfrac,yfrac,x0,y0,x,y,xtmp;
@@ -221,14 +267,18 @@ int main(int argc, char* argv[]) {
             imgIdx++;
           }
         }
-        // exit parent process
+        // exit parent process after waiting
+        while (wait(&status)>0);
+        char buffer[100];
+        sprintf(buffer,"multi-mandelbrot-%d-%ld.ppm",size,time(0));
+        write_ppm(buffer,image,size,size);
+        // detatch and remove memory
+        shmdt(image);
         exit(0);
       }
-
     }
-
   }
+  
 
-  // generate pallet
-  // compute image
+  return 0;
 }
