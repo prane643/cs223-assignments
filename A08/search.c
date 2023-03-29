@@ -21,8 +21,6 @@ int main() {
   printf("\nEnter a value to search: ");
   int input;
   scanf(" %d",&input);
-  printf("\n Looking for: %d",input);
-
   // start looking for integer
   pid_t pid;
   int split = (*numOfInt)/2;
@@ -32,26 +30,33 @@ int main() {
     // parent process
     for(i=0;i<split;i++) {
       if (intList[i]==input) {
-        printf("Parent found %d at index %d",input,i);
+        printf("Parent found %d at index %d\n",input,i);
+        fclose(fp);
+        free(numOfInt);
+        free(intList);
         return 0;
       }
     }
     // if here value was not found
-    printf("Not found!");
+    printf("Not found!\n");
   }
   else {
     // child process
     for (j=split;j<(*numOfInt);j++) {
       if (intList[j]==input) {
-        printf("Child found %d at index %d",input,j);
+        printf("Child found %d at index %d\n",input,j);
+        fclose(fp);
+        free(numOfInt);
+        free(intList);
         return 0;
       }   
     }
     // if here value was not found
-    printf("Not found!");
+    printf("Not found!\n");
   }
 
   fclose(fp);
   free(numOfInt);
+  free(intList);
   return 0;
 }
