@@ -51,35 +51,36 @@ int main(int argc, char* argv[]) {
   }
 
   // create shared memory
-  int shmid
+  int shmid;
+  shmid = shmget(IPC_PRIVATE,sizeof(struct ppm_pixel)*size*size,
+    0644 | IPC_CREAT);
+  if (shmid==-1) {
+    perror("Error: cannot initialize shared memory\n");
+    exit(1);
+  }
+  // create pointer to shared memory
+  struct ppm_pixel* image = shmat(shmid,NULL,0);
+  if (image==(void*)-1) {
+    perror("Error: cannot access shared memory");
+    exit(1);
+  }
 
   // begin computaiton of image, split processes
   pid_t pid;
   int child_status;
   pid = fork();
   if(pid==0) {
-    // child 1 process
-
-
-
-
-    pid = fork();
-    if (pid==0) {
-      // child 2 process
-    }
-    else {
-      // child 3 process
-    }
-  }
-  else {
-    // parent process
-    int iter,imgIdx=0;
+    ////////////// child 1 process ///////////////////
+    printf("Launched child process: %d",getpid());
+    printf("%d) Sub-image block: cols (%d,%d) to rows (0,%d)\n",
+      pid,size/2,size,size/2);
+    int iter,imgIdx=size/2;
     unsigned char r,g,b;
     float i,j;
     float xfrac,yfrac,x0,y0,x,y,xtmp;
     struct ppm_pixel pixel;
     for (i=0;i<size/2;i++) {
-      for (j=0;j<size/2;j++) {
+      for (j=size/2;j<size;j++) {
         xfrac = j/size;
         yfrac = i/size;
         x0 = xmin+xfrac*(xmax-xmin);
@@ -107,10 +108,80 @@ int main(int argc, char* argv[]) {
           pixel.blue = 0;
         }
         image[imgIdx] = pixel;
+        if(j==size-1){
+          imgIdx=imgIdx+(size/2);
+        }
         imgIdx++;
       }
     }
+    // exit child 1
     exit(0);
+  }
+  else {
+    // parent process...spawn another child
+    pid = fork();
+    if (pid==0) {
+      // child 2 process
+
+
+
+    }
+    else {
+      // parent process...spawn another child
+      pid = fork();
+      if (pid==0){
+        // child 3 process
+      }
+      else {
+        // parent process
+        printf("%d) Sub-image block: cols (0,%d) to rows (0,%d)\n",
+          pid,size/2,size/2);
+        int iter,imgIdx=0;
+        unsigned char r,g,b;
+        float i,j;
+        float xfrac,yfrac,x0,y0,x,y,xtmp;
+        struct ppm_pixel pixel;
+        for (i=0;i<size/2;i++) {
+          for (j=0;j<size/2;j++) {
+            xfrac = j/size;
+            yfrac = i/size;
+            x0 = xmin+xfrac*(xmax-xmin);
+            y0 = ymin+yfrac*(ymax-ymin);
+            x = 0;
+            y = 0;
+            iter = 0;
+            while (iter<maxIterations && (x*x+y*y)<2*2) {
+              xtmp = x*x - y*y + x0;
+              y = 2*x*y + y0;
+              x = xtmp;
+              iter = iter+1;
+            }
+            if (iter < maxIterations) {
+              r = pallete[iter*3];
+              g = pallete[iter*3+1];
+              b = pallete[iter*3+2];
+              pixel.red = r;
+              pixel.green = g;
+              pixel.blue = b;
+            }
+            else {
+              pixel.red = 0;
+              pixel.green = 0;
+              pixel.blue = 0;
+            }
+            image[imgIdx] = pixel;
+            if(j==(size/2)-1){
+              imgIdx=imgIdx+(size/2);
+            }
+            imgIdx++;
+          }
+        }
+        // exit parent process
+        exit(0);
+      }
+
+    }
+
   }
 
   // generate pallet
