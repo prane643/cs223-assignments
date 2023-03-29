@@ -116,6 +116,7 @@ int main(int argc, char* argv[]) {
     }
     // exit child 2
     shmdt(image);
+    free(pallete);
     exit(0);
   }
   else {
@@ -168,6 +169,7 @@ int main(int argc, char* argv[]) {
       }
       // exit child 3 process
       shmdt(image);
+      free(pallete);
       exit(0);
     }
     else {
@@ -220,6 +222,7 @@ int main(int argc, char* argv[]) {
         }
         // exit child 4 process
         shmdt(image);
+        free(pallete);
         exit(0);
       }
       else {
@@ -274,11 +277,13 @@ int main(int argc, char* argv[]) {
         write_ppm(buffer,image,size,size);
         // detatch and remove memory
         shmdt(image);
+        shmctl(shmid,IPC_RMID,0);
+        free(pallete);
         exit(0);
       }
     }
   }
   
-
+  
   return 0;
 }
