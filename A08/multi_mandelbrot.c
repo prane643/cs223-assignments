@@ -70,10 +70,10 @@ int main(int argc, char* argv[]) {
   int child_status;
   pid = fork();
   if(pid==0) {
-    ////////////// child 1 process ///////////////////
+    ////////////// child 2 process ///////////////////
     printf("Launched child process: %d",getpid());
     printf("%d) Sub-image block: cols (%d,%d) to rows (0,%d)\n",
-      pid,size/2,size,size/2);
+      getpid(),size/2,size,size/2);
     int iter,imgIdx=size/2;
     unsigned char r,g,b;
     float i,j;
@@ -114,24 +114,69 @@ int main(int argc, char* argv[]) {
         imgIdx++;
       }
     }
-    // exit child 1
+    // exit child 2
     exit(0);
   }
   else {
     // parent process...spawn another child
     pid = fork();
     if (pid==0) {
-      // child 2 process
-
-
-
+      ////////////// child 3 process ///////////////////
+      printf("Launched child process: %d",getpid());
+      printf("%d) Sub-image block: cols (0,%d) to rows (%d,%d)\n",
+        getpid(),size/2,size/2,size);
+      int iter,imgIdx=2*(size/2)*(size/2)+1;
+      unsigned char r,g,b;
+      float i,j;
+      float xfrac,yfrac,x0,y0,x,y,xtmp;
+      struct ppm_pixel pixel;
+      for (i=size/2;i<size;i++) {
+        for (j=0;j<size/2;j++) {
+          xfrac = j/size;
+          yfrac = i/size;
+          x0 = xmin+xfrac*(xmax-xmin);
+          y0 = ymin+yfrac*(ymax-ymin);
+          x = 0;
+          y = 0;
+          iter = 0;
+          while (iter<maxIterations && (x*x+y*y)<2*2) {
+            xtmp = x*x - y*y + x0;
+            y = 2*x*y + y0;
+            x = xtmp;
+            iter = iter+1;
+          }
+          if (iter < maxIterations) {
+            r = pallete[iter*3];
+            g = pallete[iter*3+1];
+            b = pallete[iter*3+2];
+            pixel.red = r;
+            pixel.green = g;
+            pixel.blue = b;
+          }
+          else {
+            pixel.red = 0;
+            pixel.green = 0;
+            pixel.blue = 0;
+          }
+          image[imgIdx] = pixel;
+          if(j==(size/2)-1){
+            imgIdx=imgIdx+(size/2);
+          }
+          imgIdx++;
+        }
+      }
+      // exit child 3 process
+      exit(0);
     }
     else {
       // parent process...spawn another child
       pid = fork();
-      if (pid==0){
-        // child 3 process
-      }
+        if (pid==0) {
+        ////////////// child 4 process ///////////////////
+        printf("Launched child process: %d",getpid());
+        printf("%d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
+          getpid(),size/2,size,size/2,size);
+        }
       else {
         // parent process
         printf("%d) Sub-image block: cols (0,%d) to rows (0,%d)\n",
