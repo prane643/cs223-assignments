@@ -43,9 +43,7 @@ int main(int argc, char* argv[]) {
   printf("  X range = [%.4f,%.4f]\n", xmin, xmax);
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
-  // todo: your code here
-
-  // generate pallette
+  // generate pallete
   srand(time(0));
   unsigned char *pallete;
   int idx,i1,j1;
@@ -83,7 +81,7 @@ int main(int argc, char* argv[]) {
   int child_status;
   pid = fork();
   if(pid==0) {
-    ////////////// child 2 process ///////////////////
+    // child 2 process
     printf("Launched child process: %d\n",getpid());
     printf("%d) Sub-image block: cols (%d,%d) to rows (0,%d)\n",
       getpid(),size/2,size,size/2);
@@ -137,7 +135,7 @@ int main(int argc, char* argv[]) {
     // parent process...spawn another child
     pid = fork();
     if (pid==0) {
-      ////////////// child 3 process ///////////////////
+      // child 3 process
       printf("Launched child process: %d\n",getpid());
       printf("%d) Sub-image block: cols (0,%d) to rows (%d,%d)\n",
         getpid(),size/2,size/2,size);
@@ -191,7 +189,7 @@ int main(int argc, char* argv[]) {
       // parent process...spawn another child
       pid = fork();
       if (pid==0) {
-        ////////////// child 4 process ///////////////////
+        // child 4 process
         printf("Launched child process: %d\n",getpid());
         printf("%d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
           getpid(),size/2,size,size/2,size);
@@ -242,7 +240,7 @@ int main(int argc, char* argv[]) {
         exit(0);
       }
       else {
-        // parent process
+        // parent process (child 1)
         printf("Launched child process: %d\n",getpid());
         printf("%d) Sub-image block: cols (0,%d) to rows (0,%d)\n",
           getpid(),size/2,size/2);
@@ -287,7 +285,7 @@ int main(int argc, char* argv[]) {
           }
         }
         printf("Child process complete: %d\n",getpid());
-        // exit parent process after waiting
+        // wait for children
         while (wait(&status)>0);
         // calculate time
         gettimeofday(&tend, NULL);
@@ -295,7 +293,7 @@ int main(int argc, char* argv[]) {
           (tend.tv_usec - tstart.tv_usec)/1.e6;
         printf("Computed mandelbrot set (%dx%d) in"
           " %g seconds\n",size,size,timer);
-        // write file
+        // write image file
         char buffer[100];
         sprintf(buffer,"multi-mandelbrot-%d-%ld.ppm",size,time(0));
         printf("Writing file: %s\n",buffer);
