@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Mar 22
+ * Description: Computing image for mandelbrot set
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

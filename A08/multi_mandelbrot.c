@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Mar 29
+ * Description: Using 4 processes to compute mandelbrot set
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
