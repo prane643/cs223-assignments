@@ -1,9 +1,13 @@
 = Hardware specifications
 
 Where did your run your tests? A laptop, or goldengate?
+- I ran my tests on a personal laptop with ssh to goldengate.
 
 What are the performance specifications of the machine: number and speed of
 processors, size of RAM? (use `lscpu` and `free -m`)
+- machine is running on x86_64 with 64 CPUs (32-bit and 64-bit). CPU ~4000 MHz, with a
+    max of 4100 MHz and a min of 1200 MHz. Total amount of RAM is 95315 megabytes, with
+    86823 megabytes free.
 
 = Single-process mandelbrot
 
