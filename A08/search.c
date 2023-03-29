@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main() {
   //struct point p[3];
@@ -23,24 +24,32 @@ int main() {
   printf("\n Looking for: %d",input);
 
   // start looking for integer
+  pid_t pid;
   int split = (*numOfInt)/2;
   int i,j;
+  pid = fork();
   if (pid!=0) {
     // parent process
     for(i=0;i<split;i++) {
-      
-
+      if (intList[i]==input) {
+        printf("Parent found %d at index %d",input,i);
+        return 0;
+      }
     }
+    // if here value was not found
+    printf("Not found!");
   }
   else {
     // child process
     for (j=split;j<(*numOfInt);j++) {
-      
+      if (intList[j]==input) {
+        printf("Child found %d at index %d",input,j);
+        return 0;
+      }   
     }
+    // if here value was not found
+    printf("Not found!");
   }
-
-
-
 
   fclose(fp);
   free(numOfInt);
