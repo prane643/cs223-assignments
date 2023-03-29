@@ -65,12 +65,18 @@ int main(int argc, char* argv[]) {
     perror("Error: cannot initialize shared memory\n");
     exit(1);
   }
+
   // create pointer to shared memory
   struct ppm_pixel* image = shmat(shmid,NULL,0);
   if (image==(void*)-1) {
     perror("Error: cannot access shared memory");
     exit(1);
   }
+
+  // set up timer
+  double timer;
+  struct timeval tstart, tend;
+  gettimeofday(&tstart, NULL);
 
   // begin computaiton of image, split processes
   pid_t pid;
@@ -124,6 +130,7 @@ int main(int argc, char* argv[]) {
     // exit child 2
     shmdt(image);
     free(pallete);
+    printf("Child process complete: %d\n",getpid());
     exit(0);
   }
   else {
@@ -177,6 +184,7 @@ int main(int argc, char* argv[]) {
       // exit child 3 process
       shmdt(image);
       free(pallete);
+      printf("Child process complete: %d\n",getpid());
       exit(0);
     }
     else {
@@ -230,6 +238,7 @@ int main(int argc, char* argv[]) {
         // exit child 4 process
         shmdt(image);
         free(pallete);
+        printf("Child process complete: %d\n",getpid());
         exit(0);
       }
       else {
@@ -277,10 +286,19 @@ int main(int argc, char* argv[]) {
             imgIdx++;
           }
         }
+        printf("Child process complete: %d\n",getpid());
         // exit parent process after waiting
         while (wait(&status)>0);
+        // calculate time
+        gettimeofday(&tend, NULL);
+        timer = tend.tv_sec - tstart.tv_sec +
+          (tend.tv_usec - tstart.tv_usec)/1.e6;
+        printf("Computed mandelbrot set (%dx%d) in"
+          " %g seconds\n",size,size,timer);
+        // write file
         char buffer[100];
         sprintf(buffer,"multi-mandelbrot-%d-%ld.ppm",size,time(0));
+        printf("Writing file: %s\n",buffer);
         write_ppm(buffer,image,size,size);
         // detatch and remove memory
         shmdt(image);
