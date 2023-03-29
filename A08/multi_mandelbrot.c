@@ -37,6 +37,82 @@ int main(int argc, char* argv[]) {
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
   // todo: your code here
+
+  // generate pallette
+  srand(time(0));
+  unsigned char *pallete;
+  int idx,i1,j1;
+  pallete = malloc(sizeof(unsigned char)*maxIterations*3);
+  for (i1=0;i1<maxIterations;i1++) {
+    for (j1=0;j1<3;j1++) {
+      idx = i1*3+j1;
+      pallete[idx]=rand()%255;
+    }
+  }
+
+  // create shared memory
+  int shmid
+
+  // begin computaiton of image, split processes
+  pid_t pid;
+  int child_status;
+  pid = fork();
+  if(pid==0) {
+    // child 1 process
+
+
+
+
+    pid = fork();
+    if (pid==0) {
+      // child 2 process
+    }
+    else {
+      // child 3 process
+    }
+  }
+  else {
+    // parent process
+    int iter,imgIdx=0;
+    unsigned char r,g,b;
+    float i,j;
+    float xfrac,yfrac,x0,y0,x,y,xtmp;
+    struct ppm_pixel pixel;
+    for (i=0;i<size/2;i++) {
+      for (j=0;j<size/2;j++) {
+        xfrac = j/size;
+        yfrac = i/size;
+        x0 = xmin+xfrac*(xmax-xmin);
+        y0 = ymin+yfrac*(ymax-ymin);
+        x = 0;
+        y = 0;
+        iter = 0;
+        while (iter<maxIterations && (x*x+y*y)<2*2) {
+          xtmp = x*x - y*y + x0;
+          y = 2*x*y + y0;
+          x = xtmp;
+          iter = iter+1;
+        }
+        if (iter < maxIterations) {
+          r = pallete[iter*3];
+          g = pallete[iter*3+1];
+          b = pallete[iter*3+2];
+          pixel.red = r;
+          pixel.green = g;
+          pixel.blue = b;
+        }
+        else {
+          pixel.red = 0;
+          pixel.green = 0;
+          pixel.blue = 0;
+        }
+        image[imgIdx] = pixel;
+        imgIdx++;
+      }
+    }
+    exit(0);
+  }
+
   // generate pallet
   // compute image
 }
