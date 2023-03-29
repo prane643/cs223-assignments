@@ -38,3 +38,15 @@ the amount of time it takes to compute each image.
 | 1000 | 0.731681
 | 2000 | 2.81732
 !===
+
+
+My results show that for larger computations, we can use multiple process to
+break up the task into smaller pieces. We can use the fork() command to make
+additional processes. The key part in this lab was to use shared memory so that
+each process could compute information and store it in a way that is accessible
+to the parent function once all the child processes finish. In this case,
+splitting the job into 4 processes lead to computational efficiency improvements,
+as we can see that the time savings increase as the image size increases.
+Theoretically if we split a job amongst 4 children, we could see a 4x time savings.
+In reality we see less than that because it takes time to assign tasks to multiple
+processes, but this is miniscule compared to the savings we get in larger jobs.
