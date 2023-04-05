@@ -1,3 +1,10 @@
+
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Apr 5
+ * Description: Search for value using MT process
+ ---------------------------------------------*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -10,7 +17,6 @@ struct information {
   int lastSegmentSize;
 };
 
-//void *searchForValue(struct information *tInfo) {
 void *searchForValue(void *arg) { 
   struct information *tInfo;
   tInfo = (struct information*)arg;
@@ -25,7 +31,8 @@ void *searchForValue(void *arg) {
     for (j=0;j<size;j++) {
       if (data[tNumber*size+j]==targetValue){
         free(tInfo);
-        printf("\nThread %d found %d at index %d\n",tNumber+1,targetValue,tNumber*size+j);
+        printf("\nThread %d found %d at index %d\n",
+          tNumber+1,targetValue,tNumber*size+j);
         return NULL;
       }
     }
@@ -34,13 +41,14 @@ void *searchForValue(void *arg) {
     return NULL;
   }
   else {
-    // if here on last segment with different number of elements
+    // if here on last segment with different # of elements
     int lastSegSize;
     lastSegSize = tInfo->lastSegmentSize;
     for (j=0;j<lastSegSize;j++) {
       if (data[tNumber*size+j]==targetValue){
         free(tInfo);
-        printf("\nThread %d found %d at index %d\n",tNumber+1,targetValue,tNumber*size+j);
+        printf("\nThread %d found %d at index %d\n",
+          tNumber+1,targetValue,tNumber*size+j);
         return NULL;
       }
     }
