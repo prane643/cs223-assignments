@@ -7,11 +7,44 @@ struct information {
   int threadNumber;
   int *data;
   int segmentSize;
+  int lastSegmentSize;
 }
 
-void *searchForValue(struct information *info) {
-  // search for value in data.bin in the corresponding indices
-
+void *searchForValue(struct information *tInfo) {
+  // search for value in data.bin
+  int targetValue,tNumber,size,j;
+  targetValue = tInfo->value;
+  tNumber = tInfo->threadNumber;
+  size = tInfo->segmentSize;
+  int *data;
+  data = tInfo->data;
+  if (tInfo->lastSegmentSize==0) {
+    for (j=0;j<size;j++) {
+      if (data[tNumber*size+j]==targetValue){
+        free(data);
+        printf("\nThread %d found %d at index %d",tNumber+1,targetValue,tNumber*size+j);
+        return NULL;
+      }
+    }
+    free(data);
+    return NULL;
+  }
+  else {
+    // if here on last segment with different number of elements
+    int lastSegSize;
+    lastSegSize = tInfo->lastSegmentSize;
+    for (j=0;j<lastSegSize;j++) {
+      if (data[tNumber*size+j]==targetValue){
+        free(data);
+        printf("\nThread %d found %d at index %d",tNumber+1,targetValue,tNumber*size+j);
+        return NULL;
+      }
+    }
+    free(data);
+    return NULL;
+  }
+  free(data);
+  return NULL;
 }
 
 
@@ -46,14 +79,16 @@ int main(int argc, char** argv) {
   struct information threadInformation[N];
   for (i=0;i<N;i++) {
     threadInformation[i].value = input;
-    threadInformation[i].threadNumber = i+1;
+    threadInformation[i].threadNumber = i;
     threadInformation[i].data = intList;
     if (i!=N-1) {
       threadInformation[i].segmentSize = segmentSize;
+      threadInformation[i].lastSegmentSize = 0;
       pthread_create(&threads[i],NULL,searchForValue,&threadInformation[i]);
     }
     else {
-      threadInformation[i].segmentSize = segmentSize+remaining;
+      threadInformation[i].segmentSize = segmentSize;
+      threadInformation[i].lastSegmentSize = segmentSize+remaining;
       pthread_create(&threads[i],NULL,searchForValue,&threadInformation[i]);
     }
   }
