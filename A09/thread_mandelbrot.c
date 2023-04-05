@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Apr 5
+ * Description: Compute mandelbrot set using MT
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -33,7 +40,43 @@ int main(int argc, char* argv[]) {
   printf("  X range = [%.4f,%.4f]\n", xmin, xmax);
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
 
-  // todo: your code here
   // generate pallet
-  // compute image
+  srand(time(0));
+  unsigned char *pallete;
+  int idx,i1,j1;
+  pallete = malloc(sizeof(unsigned char)*maxIterations*3);
+  for (i1=0;i1<maxIterations;i1++) {
+    for (j1=0;j1<3;j1++) {
+      idx = i1*3+j1;
+      pallete[idx]=rand()%255;
+    }
+  }
+
+  // set up timer
+  double timer;
+  struct timeval tstart, tend;
+  gettimeofday(&tstart, NULL);
+
+  // define struct to pass information into threads
+  struct threadInformation {
+    float xmin;
+    float xmax;
+    float ymin;
+    float ymax;
+    int col1;
+    int col2;
+    int row1;
+    int row2;
+  }
+
+  // create four threads
+  int N=4;
+  pthread_t *t1;
+  pthread_t *t2;
+  pthread_t *t3;
+  pthread_t *t4;
+
+
+
+  return 0;
 }
