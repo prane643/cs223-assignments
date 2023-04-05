@@ -14,6 +14,30 @@
 #include "read_ppm.h"
 #include "write_ppm.h"
 
+
+// define struct to pass information into threads
+struct threadInformation {
+  float xmin;
+  float xmax;
+  float ymin;
+  float ymax;
+  int col1;
+  int col2;
+  int row1;
+  int row2;
+  struct ppm_pixel* imageData;
+};
+
+void *computeImage(void *arg) {
+  // allocate memory for image
+  
+}
+
+
+
+
+
+
 int main(int argc, char* argv[]) {
   int size = 480;
   float xmin = -2.0;
@@ -52,30 +76,34 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  // create memory to store image
+  struct ppm_pixel *image = malloc(sizeof(struct ppm_pixel)*size*size);
+
   // set up timer
   double timer;
   struct timeval tstart, tend;
   gettimeofday(&tstart, NULL);
 
-  // define struct to pass information into threads
-  struct threadInformation {
-    float xmin;
-    float xmax;
-    float ymin;
-    float ymax;
-    int col1;
-    int col2;
-    int row1;
-    int row2;
-  }
-
   // create four threads
   int N=4;
-  pthread_t *t1;
-  pthread_t *t2;
-  pthread_t *t3;
-  pthread_t *t4;
+  pthread_t *threads;
+  threads = (pthread_t *)malloc(sizeof(pthread_t)*N);
 
+  // run thread 1
+  struct threadInformation *threadInformation;
+  threadInformation = malloc(sizeof(struct threadInformation));
+  (*threadInformation).xmin = xmin;
+  (*threadInformation).xmax = (xmin+xmax)/2.0;
+  (*threadInformation).ymin = ymin;
+  (*threadInformation).ymax = (ymax+ymin)/2.0;
+  (*threadInformation).col1 = 0;
+  (*threadInformation).col2 = size/2;
+  (*threadInformation).row1 = 0;
+  (*threadInformation).row2 = size/2;
+  (*threadInformation).imageData = image;
+  pthread_create(&threads[0],NULL,computeImage,(void *) threadInformation);
+
+  
 
 
   return 0;
