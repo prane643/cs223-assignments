@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <time.h>
+#include <sys/time.h>
 #include <pthread.h>
 #include "read_ppm.h"
 #include "write_ppm.h"
@@ -141,6 +142,25 @@ int main(int argc, char* argv[]) {
   (*threadInformation).row2 = size;
   (*threadInformation).imageData = image;
   pthread_create(&threads[3],NULL,computeImage,(void *) threadInformation);
+
+  // join threads together
+  int i;
+  for (i=0;i<N;i++) {
+    pthread_join(threads[i],NULL);
+  }
+
+  // calculate computation time
+  timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
+  printf("Computed mandelbrot set (%dx%d) in %g seconds\n",size,size,timer);
+
+  // write image
+  char buffer[100];
+  sprintf(buffer,"mandelbrot-%d-%ld.ppm",size,time(0));
+  write_ppm(buffer,image,size,size);
+
+  // free memory
+  free(pallete);
+  free(image);
 
   return 0;
 }
