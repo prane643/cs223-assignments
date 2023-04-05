@@ -7,19 +7,29 @@ int main(int argc, char** argv) {
     printf("usage: %s <NumThreads>\n", argv[0]);
     exit(0);
   }
+  int N;
+  N = atoi(argv[0]);
   FILE* fp = fopen("data.bin", "rb");
   int *numOfInt = malloc(sizeof(int));
   fread(numOfInt, sizeof(int),1, fp);
   printf("\nNumber of ints: %d",*numOfInt);
   int *intList = malloc(sizeof(int)*(*numOfInt));
   fread(intList, sizeof(int),*numOfInt, fp);
+  // split data into N parts
+  int segmentSize;
+  segmentSize = (*numOfInt)/N;
+  int remaining;
+  remaining = (*numOfInt)%N;
+
+
+
   // look for integer
   printf("\nEnter a value to search: ");
   int input;
   scanf(" %d",&input);
   pthread_t threads[input];
-  int i,idx1=0,idx2=(*numOfInt)/atoi(argv[0]);
-  for (i=0;i<atoi(argv[0]);i++) {
+  int i,idx1=0,idx2=(*numOfInt)/N;
+  for (i=0;i<N);i++) {
     pthread_create(&threads[i],NULL,searchForValue,input,idx1,idx2,i+1,intList);
   }
 
