@@ -2,6 +2,20 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+struct information {
+  int value;
+  int threadNumber;
+  int *data;
+  int segmentSize;
+}
+
+void *searchForValue(struct information *info) {
+  // search for value in data.bin in the corresponding indices
+
+}
+
+
+
 int main(int argc, char** argv) {
   if (argc < 2) {
     printf("usage: %s <NumThreads>\n", argv[0]);
@@ -20,31 +34,32 @@ int main(int argc, char** argv) {
   segmentSize = (*numOfInt)/N;
   int remaining;
   remaining = (*numOfInt)%N;
-
-
-
-  // look for integer
+  int i,j,count=0;
+  //int *segmentList = malloc(sizeof(int)*segmentSize*(N-1));
+  //int *lastSegmentList = malloc(sizeof(int)*segmentSize+remaining);
+  // get input to look for 
   printf("\nEnter a value to search: ");
   int input;
   scanf(" %d",&input);
+  // define threads
   pthread_t threads[input];
-  int i,idx1=0,idx2=(*numOfInt)/N;
-  for (i=0;i<N);i++) {
-    pthread_create(&threads[i],NULL,searchForValue,input,idx1,idx2,i+1,intList);
+  struct information threadInformation[N];
+  for (i=0;i<N;i++) {
+    threadInformation[i].value = input;
+    threadInformation[i].threadNumber = i+1;
+    threadInformation[i].data = intList;
+    if (i!=N-1) {
+      threadInformation[i].segmentSize = segmentSize;
+      pthread_create(&threads[i],NULL,searchForValue,&threadInformation[i]);
+    }
+    else {
+      threadInformation[i].segmentSize = segmentSize+remaining;
+      pthread_create(&threads[i],NULL,searchForValue,&threadInformation[i]);
+    }
+  }
+  return 0;
   }
 
-  return 0;
-}
 
-struct information {
-  int value;
-  int idx1;
-  int idx2;
-  int threadNumber;
-  int *data;
-}
 
-void *searchForValue(struct information *info) {
-  // search for value in data.bin in the corresponding indices
 
-}
