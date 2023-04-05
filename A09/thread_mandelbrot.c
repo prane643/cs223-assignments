@@ -103,8 +103,44 @@ int main(int argc, char* argv[]) {
   (*threadInformation).imageData = image;
   pthread_create(&threads[0],NULL,computeImage,(void *) threadInformation);
 
+  // run thread 2
+  threadInformation = malloc(sizeof(struct threadInformation));
+  (*threadInformation).xmin = (xmin+xmax)/2.0;
+  (*threadInformation).xmax = xmax;
+  (*threadInformation).ymin = ymin;
+  (*threadInformation).ymax = (ymax+ymin)/2.0;
+  (*threadInformation).col1 = size/2;
+  (*threadInformation).col2 = size;
+  (*threadInformation).row1 = 0;
+  (*threadInformation).row2 = size/2;
+  (*threadInformation).imageData = image;
+  pthread_create(&threads[1],NULL,computeImage,(void *) threadInformation);
   
+  // run thread 3
+  threadInformation = malloc(sizeof(struct threadInformation));
+  (*threadInformation).xmin = xmin;
+  (*threadInformation).xmax = (xmin+xmax)/2.0;
+  (*threadInformation).ymin = (ymax+ymin)/2.0;
+  (*threadInformation).ymax = ymax;
+  (*threadInformation).col1 = 0;
+  (*threadInformation).col2 = size/2;
+  (*threadInformation).row1 = size/2;
+  (*threadInformation).row2 = size;
+  (*threadInformation).imageData = image;
+  pthread_create(&threads[2],NULL,computeImage,(void *) threadInformation);
 
+  // run thread 4
+  threadInformation = malloc(sizeof(struct threadInformation));
+  (*threadInformation).xmin = (xmin+xmax)/2.0;
+  (*threadInformation).xmax = xmax;
+  (*threadInformation).ymin = (ymax+ymin)/2.0;
+  (*threadInformation).ymax = ymax;
+  (*threadInformation).col1 = size/2;
+  (*threadInformation).col2 = size;
+  (*threadInformation).row1 = size/2;
+  (*threadInformation).row2 = size;
+  (*threadInformation).imageData = image;
+  pthread_create(&threads[3],NULL,computeImage,(void *) threadInformation);
 
   return 0;
 }
