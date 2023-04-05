@@ -52,19 +52,16 @@ void *searchForValue(void *arg) {
   return NULL;
 }
 
-int main() {
-/*
+
 int main(int argc, char** argv) {
-  
   if (argc < 2) {
     printf("usage: %s <NumThreads>\n", argv[0]);
     exit(0);
   }
   int N;
-  N = atoi(argv[0]);
-  */
-  int N;
-  N = 2;
+  // get number of threads
+  N = atoi(argv[1]);
+  // open data file
   FILE* fp = fopen("data.bin", "rb");
   int *numOfInt = malloc(sizeof(int));
   fread(numOfInt, sizeof(int),1, fp);
@@ -76,19 +73,15 @@ int main(int argc, char** argv) {
   segmentSize = (*numOfInt)/N;
   int remaining;
   remaining = (*numOfInt)%N;
-  int i;//j,count=0;
-  //int *segmentList = malloc(sizeof(int)*segmentSize*(N-1));
-  //int *lastSegmentList = malloc(sizeof(int)*segmentSize+remaining);
+  int i;
   // get input to look for 
   printf("\nEnter a value to search: ");
   int input;
   scanf(" %d",&input);
   // define threads
-  //pthread_t threads[N];
   pthread_t *threads;
   threads = (pthread_t *)malloc(sizeof(pthread_t)*N);
   struct information *threadInformation;
-  //threadInformation = malloc(sizeof(struct information)*N);
   for (i=0;i<N;i++) {
     threadInformation = malloc(sizeof(struct information));
     (*threadInformation).value = input;
@@ -114,7 +107,7 @@ int main(int argc, char** argv) {
   free(intList);
   free(threads);
   return 0;
-  }
+}
 
 
 
