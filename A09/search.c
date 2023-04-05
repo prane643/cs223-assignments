@@ -10,7 +10,10 @@ struct information {
   int lastSegmentSize;
 };
 
-int *searchForValue(struct information *tInfo) {
+//void *searchForValue(struct information *tInfo) {
+void *searchForValue(void *arg) { 
+  struct information tInfo;
+  tInfo = *((struct information)arg);
   // search for value in data.bin
   int targetValue,tNumber,size,j;
   targetValue = tInfo->value;
@@ -67,7 +70,7 @@ int main(int argc, char** argv) {
   segmentSize = (*numOfInt)/N;
   int remaining;
   remaining = (*numOfInt)%N;
-  int i,j,count=0;
+  int i;//j,count=0;
   //int *segmentList = malloc(sizeof(int)*segmentSize*(N-1));
   //int *lastSegmentList = malloc(sizeof(int)*segmentSize+remaining);
   // get input to look for 
