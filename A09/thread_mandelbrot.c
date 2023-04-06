@@ -4,7 +4,6 @@
  * Description: Compute mandelbrot set using MT
  ---------------------------------------------*/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -14,7 +13,6 @@
 #include <pthread.h>
 #include "read_ppm.h"
 #include "write_ppm.h"
-
 
 // define struct to pass information into threads
 struct threadInformation {
@@ -55,7 +53,7 @@ void *computeImage(void *arg) {
   pallete = tInfo->pallete;
   image = tInfo->imageData;
   // identify thread
-  printf("\nThread %d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
+  printf("\nThread %d) Sub-image block: cols (%d,%d) to rows (%d,%d)",
     tid,col1,col2,row1,row2);
   size = tInfo->size;
   int iter,imgIdx;
@@ -131,11 +129,6 @@ void *computeImage(void *arg) {
   free(tInfo);
   return NULL;
 }
-
-
-
-
-
 
 int main(int argc, char* argv[]) {
   int size = 480;
@@ -267,7 +260,7 @@ int main(int argc, char* argv[]) {
   // calculate computation time
   gettimeofday(&tend, NULL);
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
-  printf("Computed mandelbrot set (%dx%d) in %g seconds\n",size,size,timer);
+  printf("\nComputed mandelbrot set (%dx%d) in %g seconds\n",size,size,timer);
 
   // write image
   char buffer[100];
