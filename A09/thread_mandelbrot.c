@@ -42,42 +42,49 @@ void *computeImage(void *arg) {
   float xmin,xmax,ymin,ymax;
   struct ppm_pixel* image;
   unsigned char *pallete;
-  // identify thread
+  // get information from struct
+  xmin = tInfo->xmin;
+  xmax = tInfo->xmax;
+  ymin = tInfo->ymin;
+  ymax = tInfo->ymax;
   col1 = tInfo->col1;
   col2 = tInfo->col2;
   row1 = tInfo->row1;
   row2 = tInfo->row2;
   tid = tInfo->tid;
-  printf("Thread %d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
+  pallete = tInfo->pallete;
+  image = tInfo->imageData;
+  // identify thread
+  printf("\nThread %d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
     tid,col1,col2,row1,row2);
   size = tInfo->size;
   int iter,imgIdx;
   // decide where to start image indexing
-  if (col1==0 && row1==0) {
+  if (col1==0 && row1!=0) {
     imgIdx = size*(size/2);
-    istart = 0;
+    istart = size/2;
     jstart = 0;
-    ifinish = size/2;
+    ifinish = size;
     jfinish = size/2;
   }
-  else if (col1==0 && row1!=0) {
+  else if (col1==0 && row1==0) {
     imgIdx = 0;
+    istart = 0;
+    ifinish = size/2;
+    jstart = 0;
+    jfinish = size/2;
+  }
+  else if (col1!=0 && row1!=0) {
+    imgIdx = size*(size/2)+(size/2);
     istart = size/2;
     ifinish = size;
-    jstart = 0;
-    jfinish = size/2;
-  }
-  else if (col1!=0 && row1==0) {
-    imgIdx = size*(size/2)+((size/2)*(size/2));
-    istart = 0;
-    ifinish = size/2;
     jstart = size/2;
     jfinish = size;
   }
-  else if (col1!=0 && row1!=0) {
+  else if (col1!=0 && row1==0) {
     imgIdx = size/2;
-    istart = size/2;
-    ifinish = size;
+    istart = 0;
+    ifinish = size/2;
     jstart = size/2;
     jfinish = size;
   }
@@ -115,7 +122,7 @@ void *computeImage(void *arg) {
         pixel.blue = 0;
       }
       image[imgIdx] = pixel;
-      if(j==size-1){
+      if(j==jfinish-1){
         imgIdx=imgIdx+(size/2);
       }
       imgIdx++;
@@ -185,13 +192,13 @@ int main(int argc, char* argv[]) {
   struct threadInformation *threadInformation;
   threadInformation = malloc(sizeof(struct threadInformation));
   (*threadInformation).xmin = xmin;
-  (*threadInformation).xmax = (xmin+xmax)/2.0;
+  (*threadInformation).xmax = xmax;
   (*threadInformation).ymin = ymin;
-  (*threadInformation).ymax = (ymax+ymin)/2.0;
+  (*threadInformation).ymax = ymax;
   (*threadInformation).col1 = 0;
   (*threadInformation).col2 = size/2;
-  (*threadInformation).row1 = 0;
-  (*threadInformation).row2 = size/2;
+  (*threadInformation).row1 = size/2;
+  (*threadInformation).row2 = size;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
   (*threadInformation).tid = 0;
@@ -201,31 +208,31 @@ int main(int argc, char* argv[]) {
 
   // run thread 2
   threadInformation = malloc(sizeof(struct threadInformation));
-  (*threadInformation).xmin = (xmin+xmax)/2.0;
+  (*threadInformation).xmin = xmin;
   (*threadInformation).xmax = xmax;
   (*threadInformation).ymin = ymin;
-  (*threadInformation).ymax = (ymax+ymin)/2.0;
+  (*threadInformation).ymax = ymax;
   (*threadInformation).col1 = size/2;
   (*threadInformation).col2 = size;
-  (*threadInformation).row1 = 0;
-  (*threadInformation).row2 = size/2;
+  (*threadInformation).row1 = size/2;
+  (*threadInformation).row2 = size;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
   (*threadInformation).tid = 1;
   (*threadInformation).pallete = pallete;
   (*threadInformation).imageData = image;
   pthread_create(&threads[1],NULL,computeImage,(void *) threadInformation);
-  
+
   // run thread 3
   threadInformation = malloc(sizeof(struct threadInformation));
   (*threadInformation).xmin = xmin;
-  (*threadInformation).xmax = (xmin+xmax)/2.0;
-  (*threadInformation).ymin = (ymax+ymin)/2.0;
+  (*threadInformation).xmax = xmax;
+  (*threadInformation).ymin = ymin;
   (*threadInformation).ymax = ymax;
   (*threadInformation).col1 = 0;
   (*threadInformation).col2 = size/2;
-  (*threadInformation).row1 = size/2;
-  (*threadInformation).row2 = size;
+  (*threadInformation).row1 = 0;
+  (*threadInformation).row2 = size/2;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
   (*threadInformation).tid = 2;
@@ -235,14 +242,14 @@ int main(int argc, char* argv[]) {
 
   // run thread 4
   threadInformation = malloc(sizeof(struct threadInformation));
-  (*threadInformation).xmin = (xmin+xmax)/2.0;
+  (*threadInformation).xmin = xmin;
   (*threadInformation).xmax = xmax;
-  (*threadInformation).ymin = (ymax+ymin)/2.0;
+  (*threadInformation).ymin = ymin;
   (*threadInformation).ymax = ymax;
   (*threadInformation).col1 = size/2;
   (*threadInformation).col2 = size;
-  (*threadInformation).row1 = size/2;
-  (*threadInformation).row2 = size;
+  (*threadInformation).row1 = 0;
+  (*threadInformation).row2 = size/2;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
   (*threadInformation).tid = 3;
@@ -254,9 +261,11 @@ int main(int argc, char* argv[]) {
   int i;
   for (i=0;i<N;i++) {
     pthread_join(threads[i],NULL);
+    printf("\nThread %d) finished",i);
   }
 
   // calculate computation time
+  gettimeofday(&tend, NULL);
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
   printf("Computed mandelbrot set (%dx%d) in %g seconds\n",size,size,timer);
 
@@ -268,6 +277,6 @@ int main(int argc, char* argv[]) {
   // free memory
   free(pallete);
   free(image);
-
+  free(threadInformation);
   return 0;
 }
