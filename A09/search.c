@@ -60,7 +60,6 @@ void *searchForValue(void *arg) {
   return NULL;
 }
 
-
 int main(int argc, char** argv) {
   if (argc < 2) {
     printf("usage: %s <NumThreads>\n", argv[0]);
