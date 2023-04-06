@@ -28,6 +28,7 @@ struct threadInformation {
   int row2;
   int size;
   int maxIterations;
+  int tid;
   unsigned char *pallete;
   struct ppm_pixel* imageData;
 };
@@ -36,7 +37,7 @@ void *computeImage(void *arg) {
   struct threadInformation *tInfo;
   tInfo = (struct threadInformation*)arg;
   // define some variables
-  int col1,col2,row1,row2,size;
+  int col1,col2,row1,row2,size,tid;
   int maxIterations,istart,ifinish,jstart,jfinish;
   float xmin,xmax,ymin,ymax;
   struct ppm_pixel* image;
@@ -46,30 +47,47 @@ void *computeImage(void *arg) {
   col2 = tInfo->col2;
   row1 = tInfo->row1;
   row2 = tInfo->row2;
+  tid = tInfo->tid;
   printf("Thread %d) Sub-image block: cols (%d,%d) to rows (%d,%d)\n",
-    pthread_self(),col1,col2,row1,row2);
+    tid,col1,col2,row1,row2);
   size = tInfo->size;
   int iter,imgIdx;
   // decide where to start image indexing
   if (col1==0 && row1==0) {
     imgIdx = size*(size/2);
+    istart = 0;
+    jstart = 0;
+    ifinish = size/2;
+    jfinish = size/2;
   }
   else if (col1==0 && row1!=0) {
     imgIdx = 0;
+    istart = size/2;
+    ifinish = size;
+    jstart = 0;
+    jfinish = size/2;
   }
   else if (col1!=0 && row1==0) {
     imgIdx = size*(size/2)+((size/2)*(size/2));
+    istart = 0;
+    ifinish = size/2;
+    jstart = size/2;
+    jfinish = size;
   }
   else if (col1!=0 && row1!=0) {
     imgIdx = size/2;
+    istart = size/2;
+    ifinish = size;
+    jstart = size/2;
+    jfinish = size;
   }
   unsigned char r,g,b;
   float i,j;
   float xfrac,yfrac,x0,y0,x,y,xtmp;
   struct ppm_pixel pixel;
   maxIterations = tInfo->maxIterations;
-  for (i=0;i<size/2;i++) {
-    for (j=size/2;j<size;j++) {
+  for (i=istart;i<ifinish;i++) {
+    for (j=jstart;j<jfinish;j++) {
       xfrac = j/size;
       yfrac = i/size;
       x0 = xmin+xfrac*(xmax-xmin);
@@ -176,6 +194,7 @@ int main(int argc, char* argv[]) {
   (*threadInformation).row2 = size/2;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
+  (*threadInformation).tid = 0;
   (*threadInformation).pallete = pallete;
   (*threadInformation).imageData = image;
   pthread_create(&threads[0],NULL,computeImage,(void *) threadInformation);
@@ -192,6 +211,7 @@ int main(int argc, char* argv[]) {
   (*threadInformation).row2 = size/2;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
+  (*threadInformation).tid = 1;
   (*threadInformation).pallete = pallete;
   (*threadInformation).imageData = image;
   pthread_create(&threads[1],NULL,computeImage,(void *) threadInformation);
@@ -208,6 +228,7 @@ int main(int argc, char* argv[]) {
   (*threadInformation).row2 = size;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
+  (*threadInformation).tid = 2;
   (*threadInformation).pallete = pallete;
   (*threadInformation).imageData = image;
   pthread_create(&threads[2],NULL,computeImage,(void *) threadInformation);
@@ -224,6 +245,7 @@ int main(int argc, char* argv[]) {
   (*threadInformation).row2 = size;
   (*threadInformation).size = size;
   (*threadInformation).maxIterations = maxIterations;
+  (*threadInformation).tid = 3;
   (*threadInformation).pallete = pallete;
   (*threadInformation).imageData = image;
   pthread_create(&threads[3],NULL,computeImage,(void *) threadInformation);
