@@ -136,6 +136,13 @@ void *computeImage(void *arg) {
   // start stage 2: compute visited counts
   int yrow,xcol;
   int* count;
+  // create mutex
+  pthread_mutex_t mutex;
+  pthread_mutex_init(&mutex,NULL);
+  // create barrier
+  pthread_barrier_t mybarrier;
+  pthread_barrier_init(&mybarrier,NULL,4);
+  // start loop
   for (i=istart;i<ifinish;i++) {
    for (j=jstart;j<jfinish;j++) {
       if (membership[imgIdx1]==1) {
@@ -160,12 +167,15 @@ void *computeImage(void *arg) {
           }
           // convert yrow xcol to imgIdx2
           imgIdx2 = yrow*size + xcol;
+          // lock mutex
+          pthread_mutex_lock(&mutex);
           count[imgIdx2] = count[imgIdx1]+1;
           //update max count
           if (count[imgIdx2]>maxCount) {
             maxCount = count[imgIdx2];
           }
-
+          // unlock mutex
+          pthread_mutex_unlock(&mutex);
         }
       }
       if(j==jfinish-1){
@@ -173,6 +183,27 @@ void *computeImage(void *arg) {
       }
       imgIdx++;
    }
+  }
+  // use barrier to wait for all counts to finish
+  pthread_barrier_wait(&mybarrier);
+
+  // start stage 3: compute colors
+  float gamma = 0.681;
+  float factor = 1.0/gamma;
+  float value;
+  for (i=istart;i<ifinish;i++) {
+    for (j=jstart;j<jfinish;j++) {
+        value = 0;
+        if (count[i*size+j]>0) { //counts at (row,col) are greater than zero
+            value = log(count[i*size+j]) / log(maxCount);
+            value = pow(value, factor)
+            color.red = value * 255
+            color.green = value * 255
+            color.blue = value * 255
+
+          write color to image at location (row,col)
+        }
+    }
   }
 
 
@@ -183,7 +214,7 @@ void *computeImage(void *arg) {
 
 
  // intialize global variable for max count
- static int maxCount = 0;
+ static float maxCount = 0;
 
 
 
