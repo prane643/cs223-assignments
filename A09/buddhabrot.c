@@ -15,12 +15,12 @@
 #include "write_ppm.h"
 #include <math.h>
 
- // intialize global variable for max count
- static float maxCount = 0;
- // create barrier
-  pthread_barrier_t mybarrier;
-  // create mutex
-  pthread_mutex_t mutex;
+// intialize global variable for max count
+static float maxCount = 0;
+// create barrier
+pthread_barrier_t mybarrier;
+// create mutex
+pthread_mutex_t mutex;
 
 // define struct to pass information into threads
 struct threadInformation {
@@ -35,7 +35,6 @@ struct threadInformation {
   int size;
   int maxIterations;
   int tid;
-  //unsigned char *pallete;
   int *membership;
   int *count;
   struct ppm_pixel* imageData;
@@ -105,7 +104,7 @@ void *computeImage(void *arg) {
   struct ppm_pixel pixel;
   maxIterations = tInfo->maxIterations;
   int imgIdx1 = imgIdx, imgIdx2;
-  //printf("\nstart memberhip for thread %d",tid);
+  // stage 1: membership
   for (i=istart;i<ifinish;i++) {
     for (j=jstart;j<jfinish;j++) {
       xfrac = (float)j/size;
@@ -129,26 +128,18 @@ void *computeImage(void *arg) {
         // set membership to true
         membership[imgIdx] = 1;
       }
-      // intialize count array to 0
-      //count[imgIdx] = 0;
-
       if(j==jfinish-1){
         imgIdx=imgIdx+(size/2);
       }
       imgIdx++;
     }
   }
-  //printf("\nfinished membership for thread %d",tid);
 
   // start stage 2: compute visited counts
   int yrow,xcol;
-
-  // start loop
   for (i=istart;i<ifinish;i++) {
    for (j=jstart;j<jfinish;j++) {
-      //printf("\n i=%d j=%d",i,j);
       if (membership[imgIdx1]==0) {
-        //printf("\nhere");
         xfrac = (float)j/size;
         yfrac = (float)i/size;
         x0 = xmin + xfrac * (xmax - xmin);
@@ -159,22 +150,18 @@ void *computeImage(void *arg) {
           xtmp = x*x - y*y + x0;
           y = 2*x*y + y0;
           x = xtmp;
-
           yrow = round(size * (y - ymin)/(ymax - ymin));
           xcol = round(size * (x - xmin)/(xmax - xmin));
-          //printf("\nyrow=%d xcol=%d x*x+y*y=%f",yrow,xcol,x*x+y*y);
           if (yrow < 0 || yrow >= size) {
             continue; // out of range
           } 
           if (xcol < 0 || xcol >= size) {
             continue; // out of range
           }
-          // convert yrow xcol to imgIdx2
           imgIdx2 = yrow*size + xcol;
           // lock mutex
           pthread_mutex_lock(&mutex);
           count[imgIdx2] = count[imgIdx2]+1;
-          printf("\n yrow= %d xcol = %d imgIdx2 = %d count=%d",yrow,xcol,imgIdx2,count[imgIdx2]);
           //update max count
           if (count[imgIdx2]>maxCount) {
             maxCount = count[imgIdx2];
@@ -182,13 +169,11 @@ void *computeImage(void *arg) {
           // unlock mutex
           pthread_mutex_unlock(&mutex);
         }
-        //printf("\n left while loop");
       }
       if(j==jfinish-1){
         imgIdx1=imgIdx1+(size/2);
       }
       imgIdx1++;
-      printf("\n end of for loop i=%d j=%d ifinish=%d jfinish=%d",i,j,ifinish,jfinish);
    }
   }
   // use barrier to wait for all counts to finish
@@ -206,15 +191,13 @@ void *computeImage(void *arg) {
   for (i1=istart;i1<ifinish;i1++) {
     for (j1=jstart;j1<jfinish;j1++) {
         value = 0;
-        //printf("\nr:%d c:%d count: %d tid: %d",i1,j1,count[i1*size+j1],tid);
-        if (count[i1*size+j1]>0) { //counts at (row,col) are greater than zero
+        if (count[i1*size+j1]>0) {
             value = log(count[i1*size+j1]) / log(maxCount);
             value = pow(value, factor);
-            printf("\npixel val: %f",value*255);
             color.red = value * 255;
             color.green = value * 255;
             color.blue = value * 255;
-            image[i1*size+j1] = color; //write color to image at location (row,col)
+            image[i1*size+j1] = color;
         }
     }
   }
@@ -222,8 +205,6 @@ void *computeImage(void *arg) {
   free(tInfo);
   return NULL;
 }
-
-
 
 int main(int argc, char* argv[]) {
   int size = 480;
@@ -260,12 +241,10 @@ int main(int argc, char* argv[]) {
   int *membership = malloc(sizeof(int)*size*size);
   // create memory for count array
   int *count = malloc(sizeof(int)*size*size);
-
   // set up timer
   double timer;
   struct timeval tstart, tend;
   gettimeofday(&tstart, NULL);
-
   // create four threads
   int N=4;
   pthread_t *threads;
@@ -289,7 +268,6 @@ int main(int argc, char* argv[]) {
   (*threadInformation).count = count;
   (*threadInformation).imageData = image;
   pthread_create(&threads[0],NULL,computeImage,(void *) threadInformation);
-  //pthread_join(threads[0],NULL);
 
   // run thread 2
   threadInformation = malloc(sizeof(struct threadInformation));
@@ -308,7 +286,6 @@ int main(int argc, char* argv[]) {
   (*threadInformation).count = count;
   (*threadInformation).imageData = image;
   pthread_create(&threads[1],NULL,computeImage,(void *) threadInformation);
-  //pthread_join(threads[1],NULL);
 
   // run thread 3
   threadInformation = malloc(sizeof(struct threadInformation));
@@ -327,7 +304,6 @@ int main(int argc, char* argv[]) {
   (*threadInformation).count = count;
   (*threadInformation).imageData = image;
   pthread_create(&threads[2],NULL,computeImage,(void *) threadInformation);
-//pthread_join(threads[2],NULL);
 
   // run thread 4
   threadInformation = malloc(sizeof(struct threadInformation));
@@ -346,9 +322,7 @@ int main(int argc, char* argv[]) {
   (*threadInformation).count = count;
   (*threadInformation).imageData = image;
   pthread_create(&threads[3],NULL,computeImage,(void *) threadInformation);
-//pthread_join(threads[3],NULL);
 
-  
   // join threads together
   int i;
   for (i=0;i<N;i++) {
