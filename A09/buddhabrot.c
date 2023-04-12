@@ -22,6 +22,7 @@ struct threadInformation {
   int tid;
   unsigned char *pallete;
   int *membership;
+  int *count;
   struct ppm_pixel* imageData;
 };
 
@@ -87,6 +88,7 @@ void *computeImage(void *arg) {
   float xfrac,yfrac,x0,y0,x,y,xtmp;
   struct ppm_pixel pixel;
   maxIterations = tInfo->maxIterations;
+  int imgIdx1 = imgIdx, imgIdx2;
   for (i=istart;i<ifinish;i++) {
     for (j=jstart;j<jfinish;j++) {
       xfrac = j/size;
@@ -131,7 +133,47 @@ void *computeImage(void *arg) {
     }
   }
 
-  // start stage 2
+  // start stage 2: compute visited counts
+  int yrow,xcol;
+  int* count;
+  for (i=istart;i<ifinish;i++) {
+   for (j=jstart;j<jfinish;j++) {
+      if (membership[imgIdx1]==1) {
+        xfrac = j/size;
+        yfrac = i/size;
+        x0 = xmin + xfrac * (xmax - xmin);
+        y0 = ymin + yfrac * (ymax - ymin);
+        x = 0;
+        y = 0;
+        while (x*x + y*y < 2*2) {
+          xtmp = x*x - y*y + x0;
+          y = 2*x*y + y0;
+          x = xtmp;
+
+          yrow = round(size * (y - ymin)/(ymax - ymin));
+          xcol = round(size * (x - xmin)/(xmax - xmin));
+          if (yrow < 0 || yrow >= size) {
+            continue; // out of range
+          } 
+          if (xcol < 0 || xcol >= size) {
+            continue; // out of range
+          }
+          // convert yrow xcol to imgIdx2
+          imgIdx2 = yrow*size + xcol;
+          count[imgIdx2] = count[imgIdx1]+1;
+          //update max count
+          if (count[imgIdx2]>maxCount) {
+            maxCount = count[imgIdx2];
+          }
+
+        }
+      }
+      if(j==jfinish-1){
+        imgIdx=imgIdx+(size/2);
+      }
+      imgIdx++;
+   }
+  }
 
 
   free(tInfo);
@@ -140,7 +182,8 @@ void *computeImage(void *arg) {
 
 
 
-
+ // intialize global variable for max count
+ static int maxCount = 0;
 
 
 
@@ -172,4 +215,7 @@ int main(int argc, char* argv[]) {
 
   // todo: your code here
   // compute image
+
+ 
+
 }
