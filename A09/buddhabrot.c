@@ -130,6 +130,10 @@ void *computeImage(void *arg) {
       imgIdx++;
     }
   }
+
+  // start stage 2
+
+
   free(tInfo);
   return NULL;
 }
