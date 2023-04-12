@@ -177,12 +177,9 @@ void *computeImage(void *arg) {
    }
   }
   // use barrier to wait for all counts to finish
-  printf("\n finished counts for thread %d",tid);
   pthread_barrier_wait(&mybarrier);
-  printf("\n finished all counts");
 
   // start stage 3: compute colors
-  printf("\n compute colors for thread %d",tid);
   float gamma = 0.681;
   float factor = 1.0/gamma;
   float value;
