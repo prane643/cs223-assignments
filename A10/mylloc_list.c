@@ -36,6 +36,16 @@ void *malloc (size_t size) {
       next = next->next;
     }
   }
+  // allocate memory using sbrk if no compatable chunk
+  void *memory = sbrk(size+sizeof(struct chunk));
+  if (memory==(void *)-1) {
+    return NULL;
+  }
+  else {
+    struct chunk *cnk = (struct chunk*)memory;
+    cnk->size = size;
+    return (void*)(cnk+1);
+  }
 }
 
 void free(void *memory) {
