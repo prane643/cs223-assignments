@@ -33,6 +33,7 @@ void memstats(struct chunk* freelist, void* buffer[], int len) {
   struct chunk* nextNode = freelist;
   if (nextNode!=NULL) {
     while (1) {
+      bytesFree = bytesFree + nextNode->size;
       numOfFree++;
       nextNode = nextNode->next;
       if (nextNode==NULL) {
@@ -48,6 +49,11 @@ void memstats(struct chunk* freelist, void* buffer[], int len) {
   // print blocks
   printf("\nTotal blocks: %d Free blocks: %d"
     " Used blocks: %d\n",numOfTotal,numOfFree,numOfUsed);
+  // calculate total bytes
+  bytesTotal = bytesFree+bytesUsed;
+  // print bytes
+  printf("\nTotal memory allocated: %d Free memory: %d"
+    " Used memory: %d\n",bytesTotal,bytesFree,bytesUsed);
 
 
 
