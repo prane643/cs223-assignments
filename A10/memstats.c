@@ -17,10 +17,15 @@ struct chunk {
 };
 
 void memstats(struct chunk* freelist, void* buffer[], int len) {
-  // calculate used blocks
+  // calculate # of used blocks and the bytes
   int i,numOfUsed=0,numOfFree=0,numOfTotal;
+  int bytesFree=0,bytesUsed=0,bytesTotal=0,openMem=0;
+  struct chunk* headerInfo;
   for (i=0;i<len;i++) {
-    if buffer[i]!=NULL {
+    if (buffer[i]!=NULL) {
+      headerInfo = (struct chunk*)((struct chunk*)buffer[i]-1);
+      bytesUsed = bytesUsed + headerInfo->size;
+      openMem = openMem + (headerInfo->size - headerInfo->used);
       numOfUsed++;
     }
   }
@@ -42,7 +47,10 @@ void memstats(struct chunk* freelist, void* buffer[], int len) {
   numOfTotal = numOfFree+numOfUsed;
   // print blocks
   printf("\nTotal blocks: %d Free blocks: %d"
-    " Used blocks: %d",numOfTotal,numOfFree,numOfUsed);
+    " Used blocks: %d\n",numOfTotal,numOfFree,numOfUsed);
+
+
+
   
 }
 
