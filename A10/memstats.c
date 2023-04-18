@@ -17,6 +17,33 @@ struct chunk {
 };
 
 void memstats(struct chunk* freelist, void* buffer[], int len) {
+  // calculate used blocks
+  int i,numOfUsed=0,numOfFree=0,numOfTotal;
+  for (i=0;i<len;i++) {
+    if buffer[i]!=NULL {
+      numOfUsed++;
+    }
+  }
+  // calculate free blocks
+  struct chunk* nextNode = freelist;
+  if (nextNode!=NULL) {
+    while (1) {
+      numOfFree++;
+      nextNode = nextNode->next;
+      if (nextNode==NULL) {
+        break;
+      }
+    }
+  }
+  else {
+    numOfFree = 0;
+  }
+  // calculate total blocks
+  numOfTotal = numOfFree+numOfUsed;
+  // print blocks
+  printf("\nTotal blocks: %d Free blocks: %d"
+    " Used blocks: %d",numOfTotal,numOfFree,numOfUsed);
+  
 }
 
 int main ( int argc, char* argv[]) {
