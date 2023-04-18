@@ -21,17 +21,18 @@ void *malloc (size_t size) {
   }
   struct chunk *next = flist;
   struct chunk *prev = NULL;
-  while (next!=NULL) { // while linked list is not traversed
-    if (next->size>=size) { // if head of linked list has enough space
+  while (next!=NULL) {
+    if (next->size>=size) {
       if (prev!=NULL) { 
-        prev->next = next->next; // remove wante chunk and patch the linked list together
+        prev->next = next->next;
       }
-      else { // if we were at the head of the list
-        flist = next->next; // update free list to start at next chunk
+      else {
+        flist = next->next;
       }
-      return (void*)(next+1); // return pointer to the chunk of right size (skip over header)
+      next->used = size;
+      return (void*)(next+1);
     }
-    else { // if next chunk doesn't have enough space, iterate through linked list
+    else {
       prev = next;
       next = next->next;
     }
@@ -44,13 +45,15 @@ void *malloc (size_t size) {
   else {
     struct chunk *cnk = (struct chunk*)memory;
     cnk->size = size;
+    cnk->used = cnk->size;
     return (void*)(cnk+1);
   }
 }
 
 void free(void *memory) {
   if (memory!=NULL) {
-    struct chunk *cnk = (struct chunk*)((struct chunk*)memory-1);
+    struct chunk *cnk = (struct chunk*)
+      ((struct chunk*)memory-1);
     cnk->next = flist; 
     flist = cnk; // adds "memory" to head of free list
   }
