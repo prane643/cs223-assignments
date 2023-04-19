@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Apr 18
+ * Description: Output memory stats for new malloc+free
+ ---------------------------------------------*/
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -46,42 +53,33 @@ void memstats(struct chunk* freelist, void* buffer[], int len) {
   }
   // calculate total blocks
   numOfTotal = numOfFree+numOfUsed;
-  // print blocks
-  printf("\nTotal blocks: %d Free blocks: %d"
-    " Used blocks: %d\n",numOfTotal,numOfFree,numOfUsed);
+  printf("Total blocks: %d Free blocks: %d"
+    " Used blocks: %d",numOfTotal,numOfFree,numOfUsed);
   // calculate total bytes
   bytesTotal = bytesFree+bytesUsed;
-  // print bytes
   printf("\nTotal memory allocated: %d Free memory: %d"
-    " Used memory: %d\n",bytesTotal,bytesFree,bytesUsed);
-
-
-
-  
+    " Used memory: %d",bytesTotal,bytesFree,bytesUsed);
+  // print percentage of underutilized memory
+  float undUtilMem;
+  undUtilMem =  openMem/(float)bytesUsed;
+  printf("\nUnderutilized memory: %.2f\n",undUtilMem);
 }
 
 int main ( int argc, char* argv[]) {
-
   printf("Starting test..\n");
-
   srand(100);
-
   double timer;
   struct timeval tstart, tend;
-
   gettimeofday(&tstart, NULL);
-
   void *buffer[BUFFER];
   for (int i = 0; i < BUFFER; i++) {
     buffer[i] = NULL;
   }
-
   void *init = sbrk(0);
   void *current;
   printf("The initial top of the heap is %p.\n", init);
   for (int j = 0 ; j < ROUNDS; j++) {
     printf("---------------\n%d\n" , j);
-
     for (int i= 0 ; i < LOOP ; i++) {
       int index = rand() % BUFFER;
       if (buffer[index] != NULL) {
@@ -107,7 +105,6 @@ int main ( int argc, char* argv[]) {
     current = sbrk(0);
     int allocated = current - init;
     init = current;
-
     printf("The new top of the heap is %p.\n", current);
     printf("Increased by %d (0x%x) bytes\n", allocated, allocated);
     memstats(flist, buffer, BUFFER);
@@ -119,6 +116,5 @@ int main ( int argc, char* argv[]) {
   gettimeofday(&tend, NULL);
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
   printf("Time is %g\n", timer);
-
   return 0 ;
 }
