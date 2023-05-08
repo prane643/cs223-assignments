@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Feb 1
+ * Description: let user edit song array data
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <string.h>
 

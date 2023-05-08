@@ -1,7 +1,12 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Feb 1
+ * Description: Make acronym from input
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <string.h>
-
-
 
 int main() {
 	printf("Enter a phrase: ");

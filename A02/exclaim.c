@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ * Author: Pranav Rane
+ * Date: Feb 1
+ * Description: replace lowercase letter with symbol
+ ---------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
