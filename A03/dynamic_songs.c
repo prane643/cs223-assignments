@@ -28,8 +28,10 @@ void printSongs(struct SongInformation* s,int numOfSongs) {
 		else {
 			sprintf(seconds,"%d",s[i].durationSec);
 		}
-		printf("%d)  %-20s  %-35s duration: %d:%s D: %-10f E: %-10f T: %-10f V: %-10f\n",
-		i,s[i].artist,s[i].title,s[i].durationMin,seconds,s[i].danceability,s[i].energy,s[i].tempo,s[i].valence);
+		printf("%d)  %-20s  %-35s duration: %d:%s D: %-10f" 
+			" E: %-10f T: %-10f V: %-10f\n",i,s[i].artist,s[i].title,
+			s[i].durationMin,seconds,s[i].danceability,s[i].energy,
+			s[i].tempo,s[i].valence);
 	}
 }
 
